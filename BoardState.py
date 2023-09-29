@@ -49,10 +49,8 @@ class BoardState:
                     self.matrix[col][row] = BOARD_START_POS[(col, row)]
                 else:
                     self.matrix[col][row] = 0
-
-        
-
-
-        print(self.matrix)
+    
+    def findPieces(color=None, type=None):
+        pass
 
         
