@@ -58,4 +58,10 @@ class BoardState:
     
     def getPiece(self, col : int, row : int):
         return self.matrix[col][row]
+    
+    def print(self):
+        for x in range(len(self.matrix)):
+            for y in reversed(range(len(self.matrix))):
+                print(str(self.matrix[y][x]), end="")
+            print(end="\n")
         

@@ -3,8 +3,9 @@ from unitTests import *
 
 def main():
 
-    #board = BoardState()
-    testOne()
+    board = BoardState()
+    board.print()
+    #testOne()
 
 
 main()
