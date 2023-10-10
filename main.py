@@ -1,8 +1,10 @@
-from BoardState import BoardState 
+from BoardState import *
+from unitTests import *
 
 def main():
 
-    board = BoardState()
-    #board.fancyPrint()
+    #board = BoardState()
+    testOne()
+
 
 main()
