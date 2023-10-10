@@ -44,12 +44,12 @@ class BoardState:
         self.matrix = [[0 for _ in range(BOARD_LEN)] for _ in range(BOARD_LEN)]
         self.numPieces = 32
 
-        for col in range(len(self.matrix)):
-            for row in range(len(self.matrix[col])):
-                if (col, row) in BOARD_START_POS.keys():
-                    self.matrix[col][row] = BOARD_START_POS[(col, row)]
+        for row in range(BOARD_LEN):
+            for col in range(BOARD_LEN):
+                if (row, col) in BOARD_START_POS.keys():
+                    self.matrix[row][col] = BOARD_START_POS[(row, col)]
                 else:
-                    self.matrix[col][row] = EMPTY_SQ
+                    self.matrix[row][col] = EMPTY_SQ
 
 
     def movePiece(self, colOrig : int, rowOrig : int, colDest : int, rowDest : int):
@@ -60,8 +60,8 @@ class BoardState:
         return self.matrix[col][row]
     
     def print(self):
-        for x in reversed(range(len(self.matrix))):
-            for y in reversed(range(len(self.matrix))):
-                print(f'{str(self.matrix[y][x]):3}', end="")
+        for y in reversed(range(len(self.matrix))):
+            for x in range(len(self.matrix)):
+                print(f'{str(self.matrix[x][y]):3}', end="")
             print(end="\n")
         
