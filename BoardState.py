@@ -60,11 +60,9 @@ class BoardState:
         return self.matrix[col][row]
     
     def print(self):
-        print("board state @ ", time.time())
+        print("Board State @ ", time.time())
         for y in reversed(range(len(self.matrix))):
             print("|", end="")
             for x in range(len(self.matrix)):
                 print(f'{str(self.matrix[x][y]):3}', end="")
             print("|", end="\n")
-
-        
