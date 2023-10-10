@@ -1,6 +1,7 @@
+import time
+
 """ Useful Constants """
 BOARD_LEN, EMPTY_SQ = 8, 0x0
-
 
 """ Mapping Of Board Coordinates To Piece Type and Color """
 BOARD_START_POS = dict({
@@ -43,7 +44,6 @@ class BoardState:
     def __init__(self):
         self.matrix = [[0 for _ in range(BOARD_LEN)] for _ in range(BOARD_LEN)]
         self.numPieces = 32
-
         for row in range(BOARD_LEN):
             for col in range(BOARD_LEN):
                 if (row, col) in BOARD_START_POS.keys():
@@ -52,16 +52,19 @@ class BoardState:
                     self.matrix[row][col] = EMPTY_SQ
 
 
-    def movePiece(self, colOrig : int, rowOrig : int, colDest : int, rowDest : int):
-        self.matrix[colDest][rowDest] = self.matrix[colOrig][rowOrig]
-        self.matrix[colOrig][rowOrig] = EMPTY_SQ
+    def movePiece(self, xOrig : int, yOrig : int, xDest : int, yDest : int):
+        self.matrix[xDest][yDest] = self.matrix[xOrig][yOrig]
+        self.matrix[xOrig][yOrig] = EMPTY_SQ
     
     def getPiece(self, col : int, row : int):
         return self.matrix[col][row]
     
     def print(self):
+        print("board state @ ", time.time())
         for y in reversed(range(len(self.matrix))):
+            print("|", end="")
             for x in range(len(self.matrix)):
                 print(f'{str(self.matrix[x][y]):3}', end="")
-            print(end="\n")
+            print("|", end="\n")
+
         
