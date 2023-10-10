@@ -1,5 +1,5 @@
 """ Useful Constants """
-BOARD_LEN, BOARD_HGT, EMPTY_SQ = 8, 8, 0x0
+BOARD_LEN, EMPTY_SQ = 8, 0x0
 
 
 """ Mapping Of Board Coordinates To Piece Type and Color """
@@ -41,7 +41,7 @@ BOARD_START_POS = dict({
 class BoardState:
 
     def __init__(self):
-        self.matrix = [[0 for _ in range(BOARD_HGT)] for _ in range(BOARD_LEN)]
+        self.matrix = [[0 for _ in range(BOARD_LEN)] for _ in range(BOARD_LEN)]
         self.numPieces = 32
 
         for col in range(len(self.matrix)):
@@ -60,8 +60,8 @@ class BoardState:
         return self.matrix[col][row]
     
     def print(self):
-        for x in range(len(self.matrix)):
+        for x in reversed(range(len(self.matrix))):
             for y in reversed(range(len(self.matrix))):
-                print(str(self.matrix[y][x]), end="")
+                print(f'{str(self.matrix[y][x]):3}', end="")
             print(end="\n")
         
