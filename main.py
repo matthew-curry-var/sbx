@@ -1,11 +1,10 @@
-from BoardState import *
+from Chess import *
 from unitTests import *
 
 def main():
 
-    board = BoardState()
-    #board.print()
-    board.print()
+    chessGame = Chess()
+    chessGame.printGameState()
 
 
 

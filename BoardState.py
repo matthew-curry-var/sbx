@@ -51,14 +51,17 @@ class BoardState:
                 else:
                     self.matrix[row][col] = EMPTY_SQ
 
-
-    def movePiece(self, xOrig : int, yOrig : int, xDest : int, yDest : int):
-        self.matrix[xDest][yDest] = self.matrix[xOrig][yOrig]
-        self.matrix[xOrig][yOrig] = EMPTY_SQ
+    """movePiece : move piece representation from (x0, y0) -> (x1, y1)"""
+    def movePiece(self, x0 : int, y0 : int, x1 : int, y1 : int):
+        self.matrix[x0][y0] = self.matrix[x0][y0]
+        self.matrix[x0][y0] = EMPTY_SQ
     
-    def getPiece(self, col : int, row : int):
-        return self.matrix[col][row]
-    
+    """getPiece : return piece representation from (x,y) if valid piece"""
+    def getPiece(self, x : int, y : int):
+        if (self.matrix[x][y] != 0x0):
+            return self.matrix[x][y]
+        return None
+            
     def print(self):
         print("Board State @ ", time.time())
         for y in reversed(range(len(self.matrix))):
