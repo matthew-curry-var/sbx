@@ -61,7 +61,20 @@ class BoardState:
         if (self.matrix[x][y] != 0x0):
             return self.matrix[x][y]
         return None
-            
+    
+    """isWhite : return True if given piece is white, False otherwise"""
+    def isBlack(self, x : int, y : int) -> bool:
+        if (self.matrix[x][y] % 2 == 0):
+            return True
+        return False
+
+    """isBlack : return True if given piece is black, False otherwise"""
+    def isWhite(self, x : int, y : int) -> bool:
+        if (self.matrix[x][y] % 2 == 1):
+            return True
+        return False
+    
+    """print : fancy print function for terminal printing"""
     def print(self):
         print("Board State @ ", time.time())
         for y in reversed(range(len(self.matrix))):
