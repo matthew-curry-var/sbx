@@ -53,7 +53,7 @@ class BoardState:
 
     """movePiece : move piece representation from (x0, y0) -> (x1, y1)"""
     def movePiece(self, x0 : int, y0 : int, x1 : int, y1 : int):
-        self.matrix[x0][y0] = self.matrix[x0][y0]
+        self.matrix[x1][y1] = self.matrix[x0][y0]
         self.matrix[x0][y0] = EMPTY_SQ
     
     """getPiece : return piece representation from (x,y) if valid piece"""

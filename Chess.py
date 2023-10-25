@@ -59,7 +59,6 @@ class Chess:
         moves = list()
 
         if (color == 1):    #white pawn
-
             if (y < 7):
 
                 if (self.board.getPiece(x, y + 1) == None):
