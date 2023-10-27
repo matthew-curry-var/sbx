@@ -1,4 +1,6 @@
 from BoardState import *
+from util import *
+from cursor import *
 
 class Chess:
 
@@ -36,7 +38,7 @@ class Chess:
 
             elif(piece == 0x0B or piece == 0x0C): #King
                 return self.kingMove(pieceX, pieceY, color)
-        else:
+        elif (piece != None):
             print("Error - could not identify piece although not None: ", piece)
             return list()
 
@@ -69,12 +71,12 @@ class Chess:
 
                 if (x > 0):
                     leftDiag = self.board.getPiece(x - 1, y + 1)
-                    if (leftDiag != None and self.board.isBlack(leftDiag)):
+                    if (leftDiag != None and self.board.isBlack(x - 1, y + 1)):
                         moves.append((x - 1,y + 1))
 
                 if (x < 7):
                     rightDiag = self.board.getPiece(x + 1, y + 1)
-                    if (rightDiag != None and self.board.isBlack(rightDiag)):
+                    if (rightDiag != None and self.board.isBlack(x - 1, y + 1)):
                         moves.append((x + 1, y + 1))
 
         else:               #black pawn
@@ -85,12 +87,12 @@ class Chess:
 
                 if (x > 0):
                     leftDiag = self.board.getPiece(x - 1, y - 1)
-                    if (leftDiag != None and self.board.isWhite(leftDiag)):
+                    if (leftDiag != None and self.board.isWhite(x - 1, y - 1)):
                         moves.append((x - 1, y - 1))
 
                 if (x < 7):
                     rightDiag = self.board.getPiece(x + 1, y - 1)
-                    if (rightDiag != None and self.board.isWhite(rightDiag)):
+                    if (rightDiag != None and self.board.isWhite(x - 1, y + 1)):
                         moves.append((x + 1, y - 1))
 
         return moves
@@ -98,59 +100,21 @@ class Chess:
     """rookMove : game function to return list of legal rook moves"""
     def rookMove(self, x, y, color) -> list:
 
-        #need to make this more efficient with the cursor class....
-        #so far the logic works below, but this implementation will be slow when we do RL
-
         moves = list()
+        directions = {7 - x: right, x: left, 7 - y: up, y : down}
 
-        cursor = (x, y)
-        for i in range(7 - y): #upward: 7 - y
-            cursor = (cursor[0], cursor[1] + 1)
-            if (not self.isEmpty(cursor[0], cursor[1])):
-                if (self.board.sameColor(cursor[0], cursor[1], color)):
-                    break
+        cursor = Cursor(x, y, None)
+        for dir in set(directions.keys()):
+            cursor.x, cursor.y = cursor.ox, cursor.oy
+            cursor.modifyUpdateFunc(directions[dir])
+            for i in range(dir):
+                cursor.update()
+                if (self.isEmpty(cursor.x, cursor.y)): #if empty, add and move on
+                    moves.append((cursor.x, cursor.y))
                 else:
-                    moves.append(cursor)
+                    if(not self.board.sameColor(cursor.x, cursor.y, color)): #not-empty, add(?) then break
+                        moves.append((cursor.x, cursor.y))
                     break
-            else:
-                moves.append(cursor)
-
-        cursor = (x, y)
-        for i in range(x): #left: x
-            cursor = (cursor[0] - 1, cursor[1])
-            if (not self.isEmpty(cursor[0], cursor[1])):
-                if (self.board.sameColor(cursor[0], cursor[1], color)):
-                    break
-                else:
-                    moves.append(cursor)
-                    break
-            else:
-                moves.append(cursor)
-
-        cursor = (x, y)
-        for i in range(y): #downward : y
-            cursor = (cursor[0], cursor[1] - 1)
-            if (not self.isEmpty(cursor[0], cursor[1])):
-                if (self.board.sameColor(cursor[0], cursor[1], color)):
-                    break
-                else:
-                    moves.append(cursor)
-                    break
-            else:
-                moves.append(cursor)
-
-        cursor = (x, y)
-        for i in range(7 - x): #right: 7 - x
-            cursor = (cursor[0] + 1, cursor[1])
-            if (not self.isEmpty(cursor[0], cursor[1])):
-                if (self.board.sameColor(cursor[0], cursor[1], color)):
-                    break
-                else:
-                    moves.append(cursor)
-                    break
-            else:
-                moves.append(cursor)
-
 
         return moves
     
