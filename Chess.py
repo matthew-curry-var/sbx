@@ -40,12 +40,15 @@ class Chess:
             print("Error - could not identify piece although not None: ", piece)
             return list()
 
+    """isEmpty :  helper function that identifies if a location (x, y) is empty"""
     def isEmpty(self, x, y) -> bool:
         if (self.board.getPiece(x,y) is None):
             return True
         return False
     
+    """pawnMove : game function to return the list of legal pawn moves"""
     def pawnMove(self, x, y, color) -> list:
+        
         #if color == white, look in: 
         # 1. [x][y+1] -> check empty, 
         # 2. [x-1][y+1] -> check black piece, 
@@ -61,7 +64,7 @@ class Chess:
         if (color == 1):    #white pawn
             if (y < 7):
 
-                if (self.board.getPiece(x, y + 1) == None):
+                if (self.isEmpty(x, y + 1)):
                     moves.append((x, y + 1))
 
                 if (x > 0):
@@ -77,7 +80,7 @@ class Chess:
         else:               #black pawn
             if (y > 0):
 
-                if (self.board.getPiece(x, y - 1) == None):
+                if (self.isEmpty(x, y - 1)):
                     moves.append((x, y - 1))
 
                 if (x > 0):
@@ -91,6 +94,66 @@ class Chess:
                         moves.append((x + 1, y - 1))
 
         return moves
+    
+    """rookMove : game function to return list of legal rook moves"""
+    def rookMove(self, x, y, color) -> list:
+
+        #need to make this more efficient with the cursor class....
+        #so far the logic works below, but this implementation will be slow when we do RL
+
+        moves = list()
+
+        cursor = (x, y)
+        for i in range(7 - y): #upward: 7 - y
+            cursor = (cursor[0], cursor[1] + 1)
+            if (not self.isEmpty(cursor[0], cursor[1])):
+                if (self.board.sameColor(cursor[0], cursor[1], color)):
+                    break
+                else:
+                    moves.append(cursor)
+                    break
+            else:
+                moves.append(cursor)
+
+        cursor = (x, y)
+        for i in range(x): #left: x
+            cursor = (cursor[0] - 1, cursor[1])
+            if (not self.isEmpty(cursor[0], cursor[1])):
+                if (self.board.sameColor(cursor[0], cursor[1], color)):
+                    break
+                else:
+                    moves.append(cursor)
+                    break
+            else:
+                moves.append(cursor)
+
+        cursor = (x, y)
+        for i in range(y): #downward : y
+            cursor = (cursor[0], cursor[1] - 1)
+            if (not self.isEmpty(cursor[0], cursor[1])):
+                if (self.board.sameColor(cursor[0], cursor[1], color)):
+                    break
+                else:
+                    moves.append(cursor)
+                    break
+            else:
+                moves.append(cursor)
+
+        cursor = (x, y)
+        for i in range(7 - x): #right: 7 - x
+            cursor = (cursor[0] + 1, cursor[1])
+            if (not self.isEmpty(cursor[0], cursor[1])):
+                if (self.board.sameColor(cursor[0], cursor[1], color)):
+                    break
+                else:
+                    moves.append(cursor)
+                    break
+            else:
+                moves.append(cursor)
+
+
+        return moves
+    
 
     def getAllRemainingPieces(self) -> list:
         pass

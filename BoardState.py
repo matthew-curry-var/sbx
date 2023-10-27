@@ -74,6 +74,12 @@ class BoardState:
             return True
         return False
     
+    """sameColor : return True if given piece is same color as color input"""
+    def sameColor(self, x : int, y : int, color : int) -> bool:
+        if (self.matrix[x][y] % 2 != color):
+            return False
+        return True
+    
     """print : fancy print function for terminal printing"""
     def print(self):
         print("Board State @ ", time.time())
