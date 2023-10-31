@@ -101,13 +101,14 @@ class Chess:
     def rookMove(self, x, y, color) -> list:
 
         moves = list()
-        directions = {7 - x: right, x: left, 7 - y: up, y : down}
+        #directions = {7 - x: right, x: left, 7 - y: up, y : down}
+        directions = {right: 7 - x, left: x, up: 7 - y, down: y}
 
         cursor = Cursor(x, y, None)
         for dir in set(directions.keys()):
             cursor.x, cursor.y = cursor.ox, cursor.oy
-            cursor.modifyUpdateFunc(directions[dir])
-            for i in range(dir):
+            cursor.modifyUpdateFunc(dir)
+            for i in range(directions[dir]):
                 cursor.update()
                 if (self.isEmpty(cursor.x, cursor.y)): #if empty, add and move on
                     moves.append((cursor.x, cursor.y))
