@@ -101,9 +101,35 @@ class Chess:
     def rookMove(self, x, y, color) -> list:
 
         moves = list()
-        #directions = {7 - x: right, x: left, 7 - y: up, y : down}
         directions = {right: 7 - x, left: x, up: 7 - y, down: y}
 
+        cursor = Cursor(x, y, None)
+        for dir in set(directions.keys()):
+            cursor.x, cursor.y = cursor.ox, cursor.oy
+            cursor.modifyUpdateFunc(dir)
+            for i in range(directions[dir]):
+                cursor.update()
+                if (self.isEmpty(cursor.x, cursor.y)): #if empty, add and move on
+                    moves.append((cursor.x, cursor.y))
+                else:
+                    if(not self.board.sameColor(cursor.x, cursor.y, color)): #not-empty, add(?) then break
+                        moves.append((cursor.x, cursor.y))
+                    break
+
+        return moves
+    
+
+    """bishopMove : game function to return list of legal bishop moves"""
+    def bishopMove(self, x, y, color):
+
+        moves = list()
+        directions = {
+            upRight : min((7 - x), (7 - y)),
+            downRight: min((7 - x), y),
+            upLeft: min(x, (7 - y)), 
+            downLeft: min(x, y)
+            }
+        
         cursor = Cursor(x, y, None)
         for dir in set(directions.keys()):
             cursor.x, cursor.y = cursor.ox, cursor.oy

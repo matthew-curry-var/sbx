@@ -22,6 +22,12 @@ def main():
     chessGame.printGameState()
     print(chessGame.getPieceLegalMoves(6,6))
 
+    #print("bishop moves")
+    #print(chessGame.getPieceLegalMoves(2, 0))
+    chessGame.move(2,0,1,1)
+    chessGame.printGameState()
+    print(chessGame.getPieceLegalMoves(1,1))
+
     """
 
     print("moves for pawn @ (0, 1): ", chessGame.getPieceLegalMoves(0, 1))
