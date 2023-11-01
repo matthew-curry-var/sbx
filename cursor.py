@@ -1,3 +1,4 @@
+"""cursor : helper class that represents a current (x,y) state to be evaluated and a corresponding update function"""
 class Cursor:
 
     def __init__(self, x, y, func):

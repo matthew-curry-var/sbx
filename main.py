@@ -17,8 +17,19 @@ def main():
     chessGame.move(4,1,4,2)
     chessGame.move(4,2,4,3)
     chessGame.move(4,0,4,1)
+    chessGame.move(4,1,5,2)
+    chessGame.move(5,2,6,2)
+    chessGame.move(6,2,7,2)
+    chessGame.move(7,2,7,3)
+    chessGame.move(7,3,7,4)
+    chessGame.move(7,4,7,5)
+    chessGame.move(0,2,0,3)
+    chessGame.move(0,3,0,4)
+    chessGame.move(0,4,0,5)
+    chessGame.move(0,5,1,6)
+    chessGame.move(1,6,2,7)
     chessGame.printGameState()
-    print(chessGame.getPieceLegalMoves(4,1))
+    print(chessGame.getPieceLegalMoves(0,6))
     
 
     """

@@ -38,9 +38,8 @@ class Chess:
 
             elif(piece == 0x0B or piece == 0x0C): #King
                 return self.kingMove(pieceX, pieceY, color)
-        elif (piece != None):
-            print("Error - could not identify piece although not None: ", piece)
-            return list()
+        
+        return list()
 
     """isEmpty :  helper function that identifies if a location (x, y) is empty"""
     def isEmpty(self, x, y) -> bool:
@@ -67,52 +66,26 @@ class Chess:
     
     """pawnMove : game function to return the list of legal pawn moves"""
     def pawnMove(self, x, y, color) -> list:
-        
-        #if color == white, look in: 
-        # 1. [x][y+1] -> check empty, 
-        # 2. [x-1][y+1] -> check black piece, 
-        # 3. [x+1][y+1] -> check black piece
-
-        #if color == black, look in:
-        # 1. [x][y-1] -> check empty
-        # 2. [x-1][y-1] -> check white piece,
-        # 3. [x+1][y-1] -> check white piece
-
         moves = list()
-
+        
         if (color == 1):    #white pawn
             if (y < 7):
-
-                if (self.isEmpty(x, y + 1)):
-                    moves.append((x, y + 1))
-
+                if (self.isEmpty(x, y + 1)): moves.append((x, y + 1))
                 if (x > 0):
-                    leftDiag = self.board.getPiece(x - 1, y + 1)
-                    if (leftDiag != None and self.board.isBlack(x - 1, y + 1)):
-                        moves.append((x - 1,y + 1))
-
+                    if (not self.isEmpty(x - 1, y + 1) and self.board.isBlack(x - 1, y + 1)): moves.append((x - 1,y + 1))
                 if (x < 7):
-                    rightDiag = self.board.getPiece(x + 1, y + 1)
-                    if (rightDiag != None and self.board.isBlack(x - 1, y + 1)):
-                        moves.append((x + 1, y + 1))
+                    if (not self.isEmpty(x + 1, y + 1) and self.board.isBlack(x - 1, y + 1)): moves.append((x + 1, y + 1))
 
         else:               #black pawn
             if (y > 0):
-
-                if (self.isEmpty(x, y - 1)):
-                    moves.append((x, y - 1))
-
+                if (self.isEmpty(x, y - 1)): moves.append((x, y - 1))
                 if (x > 0):
-                    leftDiag = self.board.getPiece(x - 1, y - 1)
-                    if (leftDiag != None and self.board.isWhite(x - 1, y - 1)):
-                        moves.append((x - 1, y - 1))
-
+                    if (not self.isEmpty(x - 1, y - 1) and self.board.isWhite(x - 1, y - 1)): moves.append((x - 1, y - 1))
                 if (x < 7):
-                    rightDiag = self.board.getPiece(x + 1, y - 1)
-                    if (rightDiag != None and self.board.isWhite(x - 1, y + 1)):
-                        moves.append((x + 1, y - 1))
+                    if (not self.isEmpty(x + 1, y - 1) and self.board.isWhite(x + 1, y - 1)): moves.append((x + 1, y - 1))
 
         return moves
+
     
     """rookMove : game function to return list of legal rook moves"""
     def rookMove(self, x, y, color) -> list:
@@ -129,27 +102,18 @@ class Chess:
     def knightMove(self, x, y, color) -> list:
         directions = list((knightL1, knightL2, knightL3, knightL4,knightL5, knightL6, knightL7, knightL8))
         
-        #more efficient way to do this?
         if (not x >= 2 and x <= 5):
-            if (x == 0): #knightL - 3, 4, 5, 6
-                dirX = directions[2:6] 
-            elif (x == 1): #knightL - 2, 3, 4, 5, 6, 7, 8
-                dirX = directions[-7::1] 
-            elif (x == 6): #knightL - 1, 2, 3, 6, 7, 8
-                dirX = directions[-3:3] 
-            elif (x == 7): #knightL - 1, 2, 7, 8
-                dirX = directions[2:-2] 
+            if (x == 0): dirX = directions[2:6]                     #knightL - 3, 4, 5, 6
+            elif (x == 1): dirX = directions[-7::1]                 #knightL - 2, 3, 4, 5, 6, 7, 8
+            elif (x == 6): dirX = directions[-3:3]                  #knightL - 1, 2, 3, 6, 7, 8
+            elif (x == 7): dirX = directions[2:-2]                  #knightL - 1, 2, 7, 8      
         else: dirX = directions
     
         if (not y >= 2 and y <= 5):
-            if (y == 0): #knightL - 1, 2, 3, 4
-                dirY = directions[0:4]
-            elif (y == 1): #knightL - 1, 2, 3, 4, 5, 8
-                dirY = directions[:5] + directions[-1:]
-            elif (y == 6): #knightL - 1, 4, 5, 6, 7, 8
-                dirY = directions[0:] + directions[3:8]
-            elif (y == 7): #knightL - 5, 6, 7, 8
-                dirY = directions[4:8]
+            if (y == 0): dirY = directions[0:4]                     #knightL - 1, 2, 3, 4
+            elif (y == 1): dirY = directions[:5] + directions[-1:]  #knightL - 1, 2, 3, 4, 5, 8
+            elif (y == 6): dirY = directions[0:] + directions[3:8]  #knightL - 1, 4, 5, 6, 7, 8
+            elif (y == 7): dirY = directions[4:8]                   #knightL - 5, 6, 7, 8
         else: dirY = directions
 
         directions = listToDict(list(set(dirX) & set(dirY)), defVal = 1)
@@ -163,13 +127,16 @@ class Chess:
     """kingMove : game function to return list of legal king moves"""
     def kingMove(self, x, y, color) -> list:
         directions = list((upLeft, up, upRight, right, downRight, down, downLeft, left))
-        
-        if (y == 0): directions = directions[:4] + directions[7:]
-        elif (y == 7): directions = directions[3:]
-        if (x == 0): directions = directions[1:6]
-        elif (x == 7): directions = directions[:2] + directions[6:]
 
-        directions = listToDict(directions, defVal=1)
+        if (x == 0): dirX = directions[1:6]
+        elif (x == 7): dirX = directions[:2] + directions[6:]
+        else: dirX = directions
+
+        if (y == 0): dirY = directions[:4] + directions[7:]
+        elif (y == 7): dirY = directions[3:]
+        else: dirY = directions
+        
+        directions = listToDict(list(set(dirX) & set(dirY)), defVal=1)
         
         return self.pieceMoveLogic(x, y, color, directions)
 
