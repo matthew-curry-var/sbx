@@ -152,7 +152,7 @@ class Chess:
                 dirY = directions[4:8]
         else: dirY = directions
 
-        directions = listToDict(list(set(dirX) & set(dirY)), defVal=1)
+        directions = listToDict(list(set(dirX) & set(dirY)), defVal = 1)
 
         return self.pieceMoveLogic(x, y, color, directions)
     
@@ -162,8 +162,17 @@ class Chess:
     
     """kingMove : game function to return list of legal king moves"""
     def kingMove(self, x, y, color) -> list:
-        pass
-            
+        directions = list((upLeft, up, upRight, right, downRight, down, downLeft, left))
+        
+        if (y == 0): directions = directions[:4] + directions[7:]
+        elif (y == 7): directions = directions[3:]
+        if (x == 0): directions = directions[1:6]
+        elif (x == 7): directions = directions[:2] + directions[6:]
+
+        directions = listToDict(directions, defVal=1)
+        
+        return self.pieceMoveLogic(x, y, color, directions)
+
 
     def getAllRemainingPieces(self) -> list:
         pass

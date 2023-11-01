@@ -14,8 +14,11 @@ def main():
     chessGame.move(2,0,5,3)
     chessGame.move(0,0,2,0)
     chessGame.move(3,0,3,1)
+    chessGame.move(4,1,4,2)
+    chessGame.move(4,2,4,3)
+    chessGame.move(4,0,4,1)
     chessGame.printGameState()
-    print(chessGame.getPieceLegalMoves(3,1))
+    print(chessGame.getPieceLegalMoves(4,1))
     
 
     """
