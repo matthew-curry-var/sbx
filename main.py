@@ -5,31 +5,8 @@ def main():
 
     chessGame = Chess()
 
-    chessGame.move(1,0,2,2)
-    chessGame.move(2,2,4,3)
-    chessGame.move(4,3,5,5)
-    chessGame.move(0,1,0,2)
-    chessGame.move(0,2,1,2)
-    chessGame.move(3,1,3,2)
-    chessGame.move(2,0,5,3)
-    chessGame.move(0,0,2,0)
-    chessGame.move(3,0,3,1)
-    chessGame.move(4,1,4,2)
-    chessGame.move(4,2,4,3)
-    chessGame.move(4,0,4,1)
-    chessGame.move(4,1,5,2)
-    chessGame.move(5,2,6,2)
-    chessGame.move(6,2,7,2)
-    chessGame.move(7,2,7,3)
-    chessGame.move(7,3,7,4)
-    chessGame.move(7,4,7,5)
-    chessGame.move(0,2,0,3)
-    chessGame.move(0,3,0,4)
-    chessGame.move(0,4,0,5)
-    chessGame.move(0,5,1,6)
-    chessGame.move(1,6,2,7)
     chessGame.printGameState()
-    print(chessGame.getPieceLegalMoves(0,6))
+    print(chessGame.getAllLegalMoves())
     
 
     """

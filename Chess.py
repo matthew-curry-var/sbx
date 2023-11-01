@@ -68,7 +68,7 @@ class Chess:
     def pawnMove(self, x, y, color) -> list:
         moves = list()
         
-        if (color == 1):    #white pawn
+        if (color == 1):    #white pawn (need to add promotion ability)
             if (y < 7):
                 if (self.isEmpty(x, y + 1)): moves.append((x, y + 1))
                 if (x > 0):
@@ -76,7 +76,7 @@ class Chess:
                 if (x < 7):
                     if (not self.isEmpty(x + 1, y + 1) and self.board.isBlack(x - 1, y + 1)): moves.append((x + 1, y + 1))
 
-        else:               #black pawn
+        else:               #black pawn (need to add promotion ability)
             if (y > 0):
                 if (self.isEmpty(x, y - 1)): moves.append((x, y - 1))
                 if (x > 0):
@@ -86,7 +86,6 @@ class Chess:
 
         return moves
 
-    
     """rookMove : game function to return list of legal rook moves"""
     def rookMove(self, x, y, color) -> list:
         directions = {right: 7 - x, left: x, up: 7 - y, down: y}
@@ -100,20 +99,20 @@ class Chess:
     
     """knightMove : game function to return list of legal knight moves"""
     def knightMove(self, x, y, color) -> list:
-        directions = list((knightL1, knightL2, knightL3, knightL4,knightL5, knightL6, knightL7, knightL8))
+        directions = list((knightL1, knightL2, knightL3, knightL4, knightL5, knightL6, knightL7, knightL8))
         
-        if (not x >= 2 and x <= 5):
+        if (not (x >= 2 and x <= 5)):
             if (x == 0): dirX = directions[2:6]                     #knightL - 3, 4, 5, 6
             elif (x == 1): dirX = directions[-7::1]                 #knightL - 2, 3, 4, 5, 6, 7, 8
-            elif (x == 6): dirX = directions[-3:3]                  #knightL - 1, 2, 3, 6, 7, 8
-            elif (x == 7): dirX = directions[2:-2]                  #knightL - 1, 2, 7, 8      
+            elif (x == 6): dirX = directions[:3] + directions[5:]   #knightL - 1, 2, 3, 6, 7, 8
+            elif (x == 7): dirX = directions[:2] + directions[6:]   #knightL - 1, 2, 7, 8      
         else: dirX = directions
     
-        if (not y >= 2 and y <= 5):
-            if (y == 0): dirY = directions[0:4]                     #knightL - 1, 2, 3, 4
+        if (not (y >= 2 and y <= 5)):
+            if (y == 0): dirY = directions[:4]                      #knightL - 1, 2, 3, 4
             elif (y == 1): dirY = directions[:5] + directions[-1:]  #knightL - 1, 2, 3, 4, 5, 8
-            elif (y == 6): dirY = directions[0:] + directions[3:8]  #knightL - 1, 4, 5, 6, 7, 8
-            elif (y == 7): dirY = directions[4:8]                   #knightL - 5, 6, 7, 8
+            elif (y == 6): dirY = directions[0:1] + directions[3:]  #knightL - 1, 4, 5, 6, 7, 8
+            elif (y == 7): dirY = directions[4:]                    #knightL - 5, 6, 7, 8
         else: dirY = directions
 
         directions = listToDict(list(set(dirX) & set(dirY)), defVal = 1)
@@ -140,13 +139,25 @@ class Chess:
         
         return self.pieceMoveLogic(x, y, color, directions)
 
-
+    """getAllRemainingPieces: returns a list of pieces on board (still in hex)"""
     def getAllRemainingPieces(self) -> list:
-        pass
+        pieces = list()
+        for y in range(8):
+            for x in range(8):
+                if (not self.isEmpty(x, y)): pieces.append((x, y))
+        return pieces
 
+    """getAllLegalMoves: returns a list of all possible moves for all pieces on board"""
     def getAllLegalMoves(self) -> list:
-        pass
+        moves = list()
+        for y in range(8):
+            for x in range(8):
+                if (not self.isEmpty(x, y)): 
+                    pMoves = self.getPieceLegalMoves(x, y)
+                    if (len(pMoves) != 0): moves.append(pMoves)
+        return moves
 
+    """check: returns True if check condition is met otherwise False"""
     def check(self) -> bool:
         pass
 
