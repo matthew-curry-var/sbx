@@ -48,8 +48,8 @@ class Chess:
             return True
         return False
     
-    """moveLogic: helper func to return list of legal moves acc. to location, color, and directional mapping"""
-    def moveLogic(self, x, y, color, dirMap) -> list:
+    """pieceMoveLogic: helper func to return list of legal moves acc. to location, color, and directional mapping"""
+    def pieceMoveLogic(self, x, y, color, dirMap) -> list:
         moves = list()
         cursor = Cursor(x, y, None)
         for dir in set(dirMap.keys()):
@@ -117,16 +117,16 @@ class Chess:
     """rookMove : game function to return list of legal rook moves"""
     def rookMove(self, x, y, color) -> list:
         directions = {right: 7 - x, left: x, up: 7 - y, down: y}
-        return self.moveLogic(x, y, color, directions)
+        return self.pieceMoveLogic(x, y, color, directions)
     
 
     """bishopMove : game function to return list of legal bishop moves"""
-    def bishopMove(self, x, y, color):
+    def bishopMove(self, x, y, color) -> list:
         directions = {upRight : min((7 - x), (7 - y)), downRight: min((7 - x), y), upLeft: min(x, (7 - y)), downLeft: min(x, y)}
-        return self.moveLogic(x, y, color, directions)
+        return self.pieceMoveLogic(x, y, color, directions)
     
     """knightMove : game function to return list of legal knight moves"""
-    def knightMove(self, x, y, color):
+    def knightMove(self, x, y, color) -> list:
         directions = list((knightL1, knightL2, knightL3, knightL4,knightL5, knightL6, knightL7, knightL8))
         
         #more efficient way to do this?
@@ -154,7 +154,15 @@ class Chess:
 
         directions = listToDict(list(set(dirX) & set(dirY)), defVal=1)
 
-        return self.moveLogic(x, y, color, directions)
+        return self.pieceMoveLogic(x, y, color, directions)
+    
+    """queenMove : game function to return list of legal queen moves"""
+    def queenMove(self, x, y, color) -> list:
+        return self.bishopMove(x, y, color) + self.rookMove(x, y, color)
+    
+    """kingMove : game function to return list of legal king moves"""
+    def kingMove(self, x, y, color) -> list:
+        pass
             
 
     def getAllRemainingPieces(self) -> list:
