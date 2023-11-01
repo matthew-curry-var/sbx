@@ -48,6 +48,23 @@ class Chess:
             return True
         return False
     
+    """moveLogic: helper func to return list of legal moves acc. to location, color, and directional mapping"""
+    def moveLogic(self, x, y, color, dirMap) -> list:
+        moves = list()
+        cursor = Cursor(x, y, None)
+        for dir in set(dirMap.keys()):
+            cursor.x, cursor.y = cursor.ox, cursor.oy
+            cursor.modifyUpdateFunc(dir)
+            for i in range(dirMap[dir]):
+                cursor.update()
+                if (self.isEmpty(cursor.x, cursor.y)): #if empty, add and move on
+                    moves.append((cursor.x, cursor.y))
+                else:
+                    if (not self.board.sameColor(cursor.x, cursor.y, color)): #not-empty, add(?) then break
+                        moves.append((cursor.x, cursor.y))
+                    break
+        return moves
+    
     """pawnMove : game function to return the list of legal pawn moves"""
     def pawnMove(self, x, y, color) -> list:
         
@@ -99,52 +116,46 @@ class Chess:
     
     """rookMove : game function to return list of legal rook moves"""
     def rookMove(self, x, y, color) -> list:
-
-        moves = list()
         directions = {right: 7 - x, left: x, up: 7 - y, down: y}
-
-        cursor = Cursor(x, y, None)
-        for dir in set(directions.keys()):
-            cursor.x, cursor.y = cursor.ox, cursor.oy
-            cursor.modifyUpdateFunc(dir)
-            for i in range(directions[dir]):
-                cursor.update()
-                if (self.isEmpty(cursor.x, cursor.y)): #if empty, add and move on
-                    moves.append((cursor.x, cursor.y))
-                else:
-                    if(not self.board.sameColor(cursor.x, cursor.y, color)): #not-empty, add(?) then break
-                        moves.append((cursor.x, cursor.y))
-                    break
-
-        return moves
+        return self.moveLogic(x, y, color, directions)
     
 
     """bishopMove : game function to return list of legal bishop moves"""
     def bishopMove(self, x, y, color):
-
-        moves = list()
-        directions = {
-            upRight : min((7 - x), (7 - y)),
-            downRight: min((7 - x), y),
-            upLeft: min(x, (7 - y)), 
-            downLeft: min(x, y)
-            }
-        
-        cursor = Cursor(x, y, None)
-        for dir in set(directions.keys()):
-            cursor.x, cursor.y = cursor.ox, cursor.oy
-            cursor.modifyUpdateFunc(dir)
-            for i in range(directions[dir]):
-                cursor.update()
-                if (self.isEmpty(cursor.x, cursor.y)): #if empty, add and move on
-                    moves.append((cursor.x, cursor.y))
-                else:
-                    if(not self.board.sameColor(cursor.x, cursor.y, color)): #not-empty, add(?) then break
-                        moves.append((cursor.x, cursor.y))
-                    break
-
-        return moves
+        directions = {upRight : min((7 - x), (7 - y)), downRight: min((7 - x), y), upLeft: min(x, (7 - y)), downLeft: min(x, y)}
+        return self.moveLogic(x, y, color, directions)
     
+    """knightMove : game function to return list of legal knight moves"""
+    def knightMove(self, x, y, color):
+        directions = list((knightL1, knightL2, knightL3, knightL4,knightL5, knightL6, knightL7, knightL8))
+        
+        #more efficient way to do this?
+        if (not x >= 2 and x <= 5):
+            if (x == 0): #knightL - 3, 4, 5, 6
+                dirX = directions[2:6] 
+            elif (x == 1): #knightL - 2, 3, 4, 5, 6, 7, 8
+                dirX = directions[-7::1] 
+            elif (x == 6): #knightL - 1, 2, 3, 6, 7, 8
+                dirX = directions[-3:3] 
+            elif (x == 7): #knightL - 1, 2, 7, 8
+                dirX = directions[2:-2] 
+        else: dirX = directions
+    
+        if (not y >= 2 and y <= 5):
+            if (y == 0): #knightL - 1, 2, 3, 4
+                dirY = directions[0:4]
+            elif (y == 1): #knightL - 1, 2, 3, 4, 5, 8
+                dirY = directions[:5] + directions[-1:]
+            elif (y == 6): #knightL - 1, 4, 5, 6, 7, 8
+                dirY = directions[0:] + directions[3:8]
+            elif (y == 7): #knightL - 5, 6, 7, 8
+                dirY = directions[4:8]
+        else: dirY = directions
+
+        directions = listToDict(list(set(dirX) & set(dirY)), defVal=1)
+
+        return self.moveLogic(x, y, color, directions)
+            
 
     def getAllRemainingPieces(self) -> list:
         pass
