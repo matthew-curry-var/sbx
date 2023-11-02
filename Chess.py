@@ -6,7 +6,8 @@ class Chess:
 
     def __init__(self):
         self.board = BoardState()
-        self.score = 0
+        self.whiteCheck, self.whiteCheckMate = False, False
+        self.blackCheck, self.blackCheckMate = False, False
 
     """move: take move piece input and implement iff. legal"""
     def move(self, xOrig : int, yOrig : int, xDest : int, yDest : int) -> None:
@@ -152,9 +153,8 @@ class Chess:
         moves = list()
         for y in range(8):
             for x in range(8):
-                if (not self.isEmpty(x, y)): 
-                    pMoves = self.getPieceLegalMoves(x, y)
-                    if (len(pMoves) != 0): moves.append(pMoves)
+                pMoves = self.getPieceLegalMoves(x, y)
+                if (len(pMoves) != 0): moves.append(pMoves)
         return moves
 
     """check: returns True if check condition is met otherwise False"""
