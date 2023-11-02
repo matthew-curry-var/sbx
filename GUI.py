@@ -1,3 +1,5 @@
+"""
+
 import PySimpleGUI as psg
 
 
@@ -12,37 +14,31 @@ pieceImages = [
                 "chess-transparent/Chess_rdt60.png", "chess-transparent/Chess_rlt60.png"
             ]
 
-init_layout = [
-                [psg.Image(pieceImages[x])],
-                [psg.Button("click next pick")]
-            ]
 
-# Create the window
-window = psg.Window('My Window', layout=init_layout, size=(400,400))
 
-# Run the event loop
+layout = [
+    [psg.Graph(canvas_size=(100,100), graph_bottom_left=(0,0), graph_top_right=(100,100), enable_events=True, key="-GRAPH-")],
+    [psg.Image(filename="chess-transparent/Chess_bdt60.png", enable_events=True, key='bdt')],
+    [psg.Image(filename="chess-transparent/Chess_blt60.png", enable_events=True, key='blt')],
+    [psg.Image(filename="chess-transparent/Chess_kdt60.png", enable_events=True, key='kdt')],
+    [psg.Button('Exit')]
+]
+
+window = psg.Window('Draggable Image Example', layout, finalize=True, size=(400,400))
+
+
+
 while True:
     event, values = window.read()
 
     print("event: ", event)
     print("values: ", values)
 
-    if (event == psg.WIN_CLOSED):
+    if event in (psg.WIN_CLOSED, 'Exit'):
         break
-    """
-    if (event == 'click next pick'):
-        print("ive been clicKed!")
-        x += 1
-        window["-IMAGE-"].update(filename=pieceImages[x])
-        if (x == 11):
-            x = 0
-
-    #if (...):
-        # Update the text of the label
-        #window.update_layout({'Text': 'This is the new text of the label.'})
-
-    """
-
+    
 
 
 window.close()
+
+"""

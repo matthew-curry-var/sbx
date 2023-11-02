@@ -1,34 +1,31 @@
 from Chess import *
 from unitTests import *
+import re
+
 
 def main():
 
     chessGame = Chess()
+    colorMap = dict({0: "black", 1: "white"})
 
-    chessGame.printGameState()
-    print(chessGame.getAllLegalMoves())
-    
+    while(True):
 
-    """
+        if (chessGame.whiteCheckMate == True or chessGame.blackCheckMate == True):
+            print("Game over!")
+            break
 
-    print("moves for pawn @ (0, 1): ", chessGame.getPieceLegalMoves(0, 1))
-    print("moves for pawn @ (4, 1): ", chessGame.getPieceLegalMoves(4, 1))
-    print("moves for pawn @ (0, 6): ", chessGame.getPieceLegalMoves(0, 6))
-
-    chessGame.move(0, 1, 0, 2)
-    chessGame.move(0, 2, 0, 3)
-    chessGame.move(0, 3, 0, 4)
-    chessGame.move(4, 1, 4, 2)
-    chessGame.move(0, 6, 0, 5)
-
-    chessGame.printGameState()
-
-    print("rook @ 0,0 poss moves: ", chessGame.getPieceLegalMoves(0, 0))
-
-    """
-
-    
+        chessGame.printGameState()
+        moveInput = input(f"{colorMap[chessGame.currentTurn]} turn to enter move (oldx, oldy, newx, newy)")
+        intInputs = str_to_int(re.findall(r"\d+", moveInput))
+        chessGame.move(intInputs[0], intInputs[1], intInputs[2], intInputs[3])
+        chessGame.nextTurn()
 
 
+
+
+
+
+def str_to_int(strList : list) -> list:
+    return [int(s) for s in strList]
 
 main()
