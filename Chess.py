@@ -143,7 +143,7 @@ class Chess:
         
         return self.pieceMoveLogic(x, y, color, directions)
 
-    """getAllRemainingPieces: returns a list of pieces on board (still in hex)"""
+    """getAllRemainingPieces: returns a list of pieces on board by coordinates"""
     def getAllRemainingPieces(self) -> list:
         pieces = list()
         for y in range(8):
@@ -159,6 +159,25 @@ class Chess:
                 pMoves = self.getPieceLegalMoves(x, y)
                 if (len(pMoves) != 0): moves.append(pMoves)
         return moves
+    
+    """getWhitePieces: returns a list of all white pieces by coordinates"""
+    def getWhitePieces(self) -> list:
+        whitePieces, pieces = list(), self.getAllRemainingPieces()
+        for c in pieces:
+            if (self.board.isWhite(c[0], c[1])): whitePieces.append((c[0], c[1]))
+        return whitePieces
+    
+    """getBlackPieces: returns a list of all black pieces by coordinates"""
+    def getBlackPieces(self) -> list:
+        blackPieces, pieces = list(), self.getAllRemainingPieces()
+        for c in pieces:
+            if (self.board.isBlack(c[0], c[1])): blackPieces.append((c[0], c[1]))
+        return blackPieces
+    
+    """getColorPieces: returns a list of all color pieces by coordinates"""
+    def getColorPieces(self, color) -> list:
+        pass
+    
 
     """nextTurn: updates necessary variables when we go to the next turn"""
     def nextTurn(self) -> None:
