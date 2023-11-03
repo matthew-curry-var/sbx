@@ -1,4 +1,5 @@
 import time
+from util import chessHexToAscii
 
 """ Useful Constants """
 BOARD_LEN, EMPTY_SQ = 8, 0x0
@@ -86,5 +87,5 @@ class BoardState:
         for y in reversed(range(len(self.matrix))):
             print("|", end="")
             for x in range(len(self.matrix)):
-                print(f'{str(self.matrix[x][y]):3}', end="")
+                print(f'{str(chessHexToAscii[self.matrix[x][y]]):3}', end="")
             print("|", end="\n")

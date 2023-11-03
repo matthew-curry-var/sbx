@@ -14,17 +14,38 @@ def main():
             print("Game over!")
             break
 
+        #Display current status of the board
         chessGame.printGameState()
-        moveInput = input(f"{colorMap[chessGame.currentTurn]} turn to enter move (oldx, oldy, newx, newy): ")
-        intInputs = str_to_int(re.findall(r"\d+", moveInput))
+
+        #Accept input for the current turn
+        moveInput = input(f"{colorMap[chessGame.currentColor]} turn to enter move (oldx, oldy, newx, newy): ")
+        intInputs = str_to_int(re.findall(r"\d", moveInput))
+
+        #Invalid input
         if (len(intInputs) != 4):
-            print("invalid move input, try again")
-        else:
+            print("Invalid input, try again")
+            continue
+
+        #Legal move check
+        if (not (intInputs[2], intInputs[3]) in chessGame.getPieceLegalMoves(intInputs[0], intInputs[1])):
+            print("Illegal move, try again")
+            continue
+
+        #Correct color check
+        if (not chessGame.board.sameColor(intInputs[0], intInputs[1], chessGame.currentColor)):
+            print("You are moving the opponent's piece, try again")
+            continue
+
+        #Check / Checkmate ?
 
 
+        #Apply move
+        chessGame.move(intInputs[0], intInputs[1], intInputs[2], intInputs[3])
 
-            chessGame.move(intInputs[0], intInputs[1], intInputs[2], intInputs[3])
-            chessGame.nextTurn()
+        #Go to next turn
+        chessGame.nextTurn()
+
+
 
 
 def str_to_int(strList : list) -> list:

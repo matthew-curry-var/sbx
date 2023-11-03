@@ -2,11 +2,13 @@ from BoardState import *
 from util import *
 from cursor import *
 
+colorFuncMap = dict()
+
 class Chess:
 
     def __init__(self):
         self.board = BoardState()
-        self.currentTurn = 1        #White turn -1, Black turn -0
+        self.currentColor = 1
         self.whiteCheck = False
         self.blackCheck = False
         self.whiteCheckMate = False
@@ -24,25 +26,12 @@ class Chess:
         piece = self.board.getPiece(pieceX, pieceY)
         if (not piece is None):
             color = piece % 2 #0/1
-
-            if (piece == 0x01 or piece == 0x02): #Pawn
-                return self.pawnMove(pieceX, pieceY, color)
-
-            elif (piece == 0x03 or piece == 0x04): #Rook
-                return self.rookMove(pieceX, pieceY, color)
-            
-            elif (piece == 0x05 or piece == 0x06): #Knight
-                return self.knightMove(pieceX, pieceY, color)
-
-            elif (piece == 0x07 or piece == 0x08): #Bishop
-                return self.bishopMove(pieceX, pieceY, color)
-
-            elif (piece == 0x09 or piece == 0x0A): #Queen
-                return self.queenMove(pieceX, pieceY, color)
-
-            elif(piece == 0x0B or piece == 0x0C): #King
-                return self.kingMove(pieceX, pieceY, color)
-        
+            if (piece == 0x01 or piece == 0x02): return self.pawnMove(pieceX, pieceY, color) #Pawn
+            elif (piece == 0x03 or piece == 0x04): return self.rookMove(pieceX, pieceY, color) #Rook
+            elif (piece == 0x05 or piece == 0x06): return self.knightMove(pieceX, pieceY, color) #Knight
+            elif (piece == 0x07 or piece == 0x08): return self.bishopMove(pieceX, pieceY, color) #Bishop
+            elif (piece == 0x09 or piece == 0x0A): return self.queenMove(pieceX, pieceY, color) #Queen
+            elif(piece == 0x0B or piece == 0x0C): return self.kingMove(pieceX, pieceY, color) #King
         return list()
 
     """isEmpty :  helper function that identifies if a location (x, y) is empty"""
@@ -160,31 +149,19 @@ class Chess:
                 if (len(pMoves) != 0): moves.append(pMoves)
         return moves
     
-    """getWhitePieces: returns a list of all white pieces by coordinates"""
-    def getWhitePieces(self) -> list:
-        whitePieces, pieces = list(), self.getAllRemainingPieces()
-        for c in pieces:
-            if (self.board.isWhite(c[0], c[1])): whitePieces.append((c[0], c[1]))
-        return whitePieces
-    
-    """getBlackPieces: returns a list of all black pieces by coordinates"""
-    def getBlackPieces(self) -> list:
-        blackPieces, pieces = list(), self.getAllRemainingPieces()
-        for c in pieces:
-            if (self.board.isBlack(c[0], c[1])): blackPieces.append((c[0], c[1]))
-        return blackPieces
-    
     """getColorPieces: returns a list of all color pieces by coordinates"""
     def getColorPieces(self, color) -> list:
-        pass
-    
+        dPieces, pieces = list(), self.getAllRemainingPieces()
+        for c in pieces:
+            if (self.board.sameColor(c[0], c[1], color)): dPieces.append(c)
+        return dPieces
 
     """nextTurn: updates necessary variables when we go to the next turn"""
     def nextTurn(self) -> None:
-        self.currentTurn = (self.currentTurn + 1) % 2
+        self.currentColor = (self.currentColor + 1) % 2
 
     """check: returns True if check condition is met otherwise False"""
-    def check(self) -> bool:
+    def check(self, color) -> bool:
         pass
 
     def checkMate(self) -> bool:
