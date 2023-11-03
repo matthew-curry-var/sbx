@@ -1,44 +1,5 @@
 import time
-from util import chessHexToAscii
-
-""" Useful Constants """
-BOARD_LEN, EMPTY_SQ = 8, 0x0
-
-""" Mapping Of Board Coordinates To Piece Type and Color """
-BOARD_START_POS = dict({
-    (0,0) : 0x3, #white rook
-    (1,0) : 0x5, #white knight
-    (2,0) : 0x7, #white bishop
-    (3,0) : 0x9, #white queen
-    (4,0) : 0xB, #white king
-    (5,0) : 0x7, #white bishop
-    (6,0) : 0x5, #white knight
-    (7,0) : 0x3, #white rook
-    (0,1) : 0x1, #white pawn
-    (1,1) : 0x1, #white pawn
-    (2,1) : 0x1, #white pawn
-    (3,1) : 0x1, #white pawn
-    (4,1) : 0x1, #white pawn
-    (5,1) : 0x1, #white pawn
-    (6,1) : 0x1, #white pawn
-    (7,1) : 0x1, #white pawn
-    (0,6) : 0x2, #black pawn
-    (1,6) : 0x2, #black pawn
-    (2,6) : 0x2, #black pawn
-    (3,6) : 0x2, #black pawn
-    (4,6) : 0x2, #black pawn
-    (5,6) : 0x2, #black pawn
-    (6,6) : 0x2, #black pawn
-    (7,6) : 0x2, #black pawn
-    (0,7) : 0x4, #black rook
-    (1,7) : 0x6, #black knight
-    (2,7) : 0x8, #black bishop
-    (3,7) : 0xA, #black queen
-    (4,7) : 0xC, #black king
-    (5,7) : 0x8, #black bishop
-    (6,7) : 0x6, #black knight
-    (7,7) : 0x4 #black bishop
-})
+from util import BOARD_START_POS, BOARD_LEN, EMPTY_SQ, CHESS_HEX_TO_ASCII
 
 class BoardState:
 
@@ -87,5 +48,5 @@ class BoardState:
         for y in reversed(range(len(self.matrix))):
             print("|", end="")
             for x in range(len(self.matrix)):
-                print(f'{str(chessHexToAscii[self.matrix[x][y]]):3}', end="")
+                print(f'{str(CHESS_HEX_TO_ASCII[self.matrix[x][y]]):3}', end="")
             print("|", end="\n")
