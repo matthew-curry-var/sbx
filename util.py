@@ -56,6 +56,36 @@ CHESS_HEX_TO_ASCII = {
     0xC: "\u2654" #black king
 }
 
+PIECE_SCORE = {
+    0x1: 1, #white pawn
+    0x2: 1, #black pawn
+    0x3: 5, #white rook
+    0x4: 5, #black rook
+    0x5: 3, #white knight
+    0x6: 3, #black knight
+    0x7: 3, #white bishop
+    0x8: 3, #black bishop
+    0x9: 9, #white queen
+    0xA: 9, #black queen
+    0xB: 0, #white king
+    0xC: 0, #black king
+}
+
+"""LIFO (Last In First Out) Stack Class"""
+class Stack:
+
+    def __init__(self):
+        self.list = []
+
+    def push(self, item):
+        self.list.append(item)
+
+    def pop(self):
+        return self.list.pop()
+
+    def isEmpty(self):
+        return len(self.list) == 0
+
 """left: increment cursor left"""
 def left(c : Cursor) -> None:
     c.x -= 1

@@ -40,6 +40,12 @@ class Chess:
             return True
         return False
     
+    """getBoardPiece : helper function to get the id hex code for a piece at (x, y), 0 otherwise"""
+    def getBoardPiece(self, x, y) -> int:
+        if (not self.isEmpty(x, y)):
+            return self.board.getPiece(x, y)
+        return 0
+    
     """pieceMoveLogic: helper func to return list of legal moves acc. to location, color, and directional mapping"""
     def pieceMoveLogic(self, x, y, color, dirMap) -> list:
         moves = list()
