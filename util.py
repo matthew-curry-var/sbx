@@ -41,7 +41,7 @@ BOARD_START_POS = dict({
 
 """ Mapping Of Board Pieces to ASCII Code """
 CHESS_HEX_TO_ASCII = {
-    0x0 : " ",
+    0x0 : "-",
     0x1 : "\u265F", #white pawn
     0x2: "\u2659", #black pawn
     0x3: "\u265C", #white rook

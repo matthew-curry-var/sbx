@@ -8,11 +8,11 @@ class Chess:
 
     def __init__(self):
         self.board = BoardState()
-        self.currentColor = 1
         self.whiteCheck = False
         self.blackCheck = False
         self.whiteCheckMate = False
         self.blackCheckMate = False
+        self.currentColor = 1
 
     """move: take move piece input and implement iff. legal"""
     def move(self, xOrig : int, yOrig : int, xDest : int, yDest : int) -> None:
@@ -20,6 +20,8 @@ class Chess:
             return
         else:
             self.board.movePiece(xOrig, yOrig, xDest, yDest)
+            self.check(self.currentColor)
+            self.nextTurn()
 
     """getPieceLegalMoves: return list of legal moves according to std chess rules"""
     def getPieceLegalMoves(self, pieceX : int, pieceY : int) -> list:
@@ -74,7 +76,8 @@ class Chess:
                     if (not self.isEmpty(x - 1, y + 1) and self.board.isBlack(x - 1, y + 1)): moves.append((x - 1,y + 1))
                 if (x < 7):
                     if (not self.isEmpty(x + 1, y + 1) and self.board.isBlack(x - 1, y + 1)): moves.append((x + 1, y + 1))
-
+            if (y == 1):
+                if (self.isEmpty(x, y + 1) and self.isEmpty(x, y + 2)): moves.append((x, y + 2))
         else:               #black pawn (need to add promotion ability)
             if (y > 0):
                 if (self.isEmpty(x, y - 1)): moves.append((x, y - 1))
@@ -82,7 +85,8 @@ class Chess:
                     if (not self.isEmpty(x - 1, y - 1) and self.board.isWhite(x - 1, y - 1)): moves.append((x - 1, y - 1))
                 if (x < 7):
                     if (not self.isEmpty(x + 1, y - 1) and self.board.isWhite(x + 1, y - 1)): moves.append((x + 1, y - 1))
-
+            if (y == 6):
+                if (self.isEmpty(x, y - 1) and self.isEmpty(x, y - 2)): moves.append((x, y - 2))
         return moves
 
     """rookMove : game function to return list of legal rook moves"""
@@ -90,7 +94,6 @@ class Chess:
         directions = {right: 7 - x, left: x, up: 7 - y, down: y}
         return self.pieceMoveLogic(x, y, color, directions)
     
-
     """bishopMove : game function to return list of legal bishop moves"""
     def bishopMove(self, x, y, color) -> list:
         directions = {upRight : min((7 - x), (7 - y)), downRight: min((7 - x), y), upLeft: min(x, (7 - y)), downLeft: min(x, y)}
@@ -137,6 +140,14 @@ class Chess:
         directions = listToDict(list(set(dirX) & set(dirY)), defVal=1)
         
         return self.pieceMoveLogic(x, y, color, directions)
+    
+    """pieceLocation : game function to find (x, y) list of respective piece type"""
+    def pieceLocation(self, pieceType) -> list:
+        allPieceLocs, locs = self.getAllRemainingPieces(), list()
+        for pieceLoc in allPieceLocs:
+            if (self.getBoardPiece(pieceLoc[0], pieceLoc[1]) == pieceType):
+                locs.append(pieceLoc)
+        return locs
 
     """getAllRemainingPieces: returns a list of pieces on board by coordinates"""
     def getAllRemainingPieces(self) -> list:
@@ -152,10 +163,20 @@ class Chess:
         for y in range(8):
             for x in range(8):
                 pMoves = self.getPieceLegalMoves(x, y)
-                if (len(pMoves) != 0): moves.append(pMoves)
+                if (len(pMoves) != 0): 
+                    for m in pMoves: moves.append(m)
         return moves
     
-    """getColorPieces: returns a list of all color pieces by coordinates"""
+    """getAllLegalMovesColor: returns a list of all possible moves for all pieces of color type"""
+    def getAllLegalMovesColor(self, color) -> list:
+        moves, colorPieces = list(), self.getColorPieces(color)
+        for p in colorPieces:
+            pMoves = self.getPieceLegalMoves(p[0], p[1])
+            if (len(pMoves) != 0): 
+                for m in pMoves: moves.append(m)
+        return moves
+    
+    """getColorPieces: returns a list of all color pieces by (x, y) coordinates"""
     def getColorPieces(self, color) -> list:
         dPieces, pieces = list(), self.getAllRemainingPieces()
         for c in pieces:
@@ -166,14 +187,21 @@ class Chess:
     def nextTurn(self) -> None:
         self.currentColor = (self.currentColor + 1) % 2
 
-    """check: returns True if check condition is met otherwise False"""
-    def check(self, color) -> bool:
-        pass
+    """check: modifies check member variable if check condition for color is met otherwise False"""
+    def check(self, color) -> None:
+        if (color == 1):                #check if black king in check
+            if (self.pieceLocation(0xC)[0] in self.getAllLegalMovesColor(1)):
+                self.blackCheck = True
+                self.checkMate(0)       #call checkmate to see if black king in checkmate
+            else: self.blackCheck = False
+        else:                           #check if white king in check
+            if (self.pieceLocation(0xB)[0] in self.getAllLegalMovesColor(0)): 
+                self.whiteCheck = True
+                self.checkMate(1)       #call checkmate to see if white king in checkmate
+            else: self.whiteCheck = False
 
-    def checkMate(self) -> bool:
-        pass
-
-    def evaluate(self): #evaluation function (will implement standard score first)
+    """checkMate: modifies checkmate member variable if checkmate condition for color is met otherwise False"""
+    def checkMate(self, color) -> None:
         pass
 
     def printGameState(self):

@@ -1,14 +1,21 @@
 from Chess import Chess
-from util import PIECE_SCORE
+from util import PIECE_SCORE, Stack
 
 class LenaAI:
 
     def __init__(self, colorInput):
         self.color = colorInput
+        self.layerFuncs = [max, min]
 
-    def treeSearch(self, gameState : Chess, depth=2):
+    
+    """miniMaxTreeSearch: apply depth-limited minimax search algorithm and returns (x0, y0, x1, y1) tuple"""
+    def miniMaxTreeSearch(self, gameState : Chess, depth : int) -> tuple:
+        if (depth == 0):
+            pass
         return
 
+
+    """evaluate: evaluates chess gamestate to construct a scoreing methodology"""
     def evaluate(self, gameState : Chess):
         score = 0
         for m in gameState.getColorPieces(self.color):
