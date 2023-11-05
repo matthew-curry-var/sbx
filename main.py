@@ -9,6 +9,7 @@ def main():
 
     chessGame = Chess()
 
+
     colorMap = dict({0: "Black", 1: "White"})
     while(True):
         if (chessGame.whiteCheckMate == True or chessGame.blackCheckMate == True):
@@ -16,7 +17,7 @@ def main():
             break
         #Display current status of the board
         chessGame.printGameState()
-        
+
         #Accept input for the current turn
         moveInput = input(f"{colorMap[chessGame.currentColor]} turn to enter move (oldx, oldy, newx, newy): ")
         intInputs = str_to_int(re.findall(r"\d", moveInput))
