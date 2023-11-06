@@ -42,6 +42,10 @@ class BoardState:
             return False
         return True
     
+    """place: place piece onto board"""
+    def place(self, x : int, y : int, p : int):
+        self.matrix[x][y] = p
+    
     """print : fancy print function for terminal printing"""
     def print(self):
         print("Board State @ ", time.time())

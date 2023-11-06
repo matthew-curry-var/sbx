@@ -14,11 +14,13 @@ class Chess:
 
     """move: take move piece input and implement iff. legal"""
     def move(self, xOrig : int, yOrig : int, xDest : int, yDest : int) -> None:
+
         if (not (xDest, yDest) in self.getPieceLegalMoves(xOrig, yOrig)):
             return
         else:
             self.board.movePiece(xOrig, yOrig, xDest, yDest)
-            self.check(self.currentColor)
+            self.check()
+            self.checkMate()
             self.nextTurn()
 
     """getPieceLegalMoves: return list of legal moves according to std chess rules"""
@@ -185,33 +187,33 @@ class Chess:
     def nextTurn(self) -> None:
         self.currentColor = (self.currentColor + 1) % 2
 
+    #test check, checkMate, and getCheckMoves more rigorously 
+
     """check: modifies check member variable if check condition for color is met otherwise False"""
-    def check(self, color) -> None:
-        oppColor = (color + 1) % 2
-        if (self.pieceLocations(KINGS[oppColor])[0] in self.getAllLegalMovesColor(color)):
+    def check(self) -> None:
+        oppColor = (self.currentColor + 1) % 2
+        if (self.pieceLocations(KINGS[oppColor])[0] in self.getAllLegalMovesColor(self.currentColor)):
             self.checkCond[oppColor] = True
-            self.checkMate(oppColor)
         else: self.checkCond[oppColor] = False
 
+    """checkMate: determines if checkmate condition met for non-current color"""
+    def checkMate(self) -> None:
+        if (self.checkCond[(self.currentColor + 1) % 2] and (len(self.getCheckMoves()) == 0)): self.checkMateFlag = True
 
-    """checkMate: determines if any possible moves to remove check condition for input color"""
-    def checkMate(self, color) -> None:
-        #assumed color is in check and responding
-        #iterate through all of color's possible moves
-        #for each, can this move result in a non-checked condition?
-        #if true once => return
-        #if all false => modify check mate flag and return
-
-        
-
-
-
-
-
-        return
-
-
-
+    """getCheckMoves: return list of moves given that current color is imposing check"""
+    def getCheckMoves(self) -> list:
+        moves, oppColor = list(), (self.currentColor + 1) % 2
+        for p in self.getColorPieces(oppColor):
+            for m in self.getPieceLegalMoves(p[0], p[1]):
+                r = self.getBoardPiece(p[0], p[1])
+                self.move(p[0], p[1], m[0], m[1])
+                if (not self.pieceLocations(KINGS[oppColor])[0] in self.getAllLegalMovesColor(self.currentColor)):
+                    moves.append(m[0], m[1])
+                self.move(m[0], m[1], p[0], p[1])
+                self.board.place(m[0], m[1], r)
+        return moves
+    
+    """printGameState: call board print function"""
     def printGameState(self):
         self.board.print()
 
