@@ -12,11 +12,14 @@ def main():
 
     colorMap = dict({0: "Black", 1: "White"})
     while(True):
-        if (chessGame.whiteCheckMate == True or chessGame.blackCheckMate == True):
-            print("Game over!")
-            break
+
         #Display current status of the board
         chessGame.printGameState()
+
+        if (chessGame.checkCond[0] == True):
+            print("Black is in check")
+        if (chessGame.checkCond[1] == True):
+            print("White is in check")
 
         #Accept input for the current turn
         moveInput = input(f"{colorMap[chessGame.currentColor]} turn to enter move (oldx, oldy, newx, newy): ")
@@ -37,11 +40,7 @@ def main():
         
         #Apply move
         chessGame.move(intInputs[0], intInputs[1], intInputs[2], intInputs[3])
-        
-        if (chessGame.whiteCheck):
-            print("White is in check!")
-        if (chessGame.blackCheck):
-            print("Black is in check!")
+    
     
         
         

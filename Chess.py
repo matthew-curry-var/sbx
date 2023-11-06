@@ -8,10 +8,8 @@ class Chess:
 
     def __init__(self):
         self.board = BoardState()
-        self.whiteCheck = False
-        self.blackCheck = False
-        self.whiteCheckMate = False
-        self.blackCheckMate = False
+        self.checkCond = {0 : False, 1 : False}
+        self.checkMateFlag = False
         self.currentColor = 1
 
     """move: take move piece input and implement iff. legal"""
@@ -26,14 +24,14 @@ class Chess:
     """getPieceLegalMoves: return list of legal moves according to std chess rules"""
     def getPieceLegalMoves(self, pieceX : int, pieceY : int) -> list:
         piece = self.board.getPiece(pieceX, pieceY)
+        color = piece % 2 #0/1
         if (not piece is None):
-            color = piece % 2 #0/1
-            if (piece == 0x01 or piece == 0x02): return self.pawnMove(pieceX, pieceY, color) #Pawn
-            elif (piece == 0x03 or piece == 0x04): return self.rookMove(pieceX, pieceY, color) #Rook
-            elif (piece == 0x05 or piece == 0x06): return self.knightMove(pieceX, pieceY, color) #Knight
-            elif (piece == 0x07 or piece == 0x08): return self.bishopMove(pieceX, pieceY, color) #Bishop
-            elif (piece == 0x09 or piece == 0x0A): return self.queenMove(pieceX, pieceY, color) #Queen
-            elif(piece == 0x0B or piece == 0x0C): return self.kingMove(pieceX, pieceY, color) #King
+            if (piece == 0x01 or piece == 0x02):    return self.pawnMove(pieceX, pieceY, color) #Pawn
+            elif (piece == 0x03 or piece == 0x04):  return self.rookMove(pieceX, pieceY, color) #Rook
+            elif (piece == 0x05 or piece == 0x06):  return self.knightMove(pieceX, pieceY, color) #Knight
+            elif (piece == 0x07 or piece == 0x08):  return self.bishopMove(pieceX, pieceY, color) #Bishop
+            elif (piece == 0x09 or piece == 0x0A):  return self.queenMove(pieceX, pieceY, color) #Queen
+            elif (piece == 0x0B or piece == 0x0C):  return self.kingMove(pieceX, pieceY, color) #King
         return list()
 
     """isEmpty :  helper function that identifies if a location (x, y) is empty"""
@@ -142,7 +140,7 @@ class Chess:
         return self.pieceMoveLogic(x, y, color, directions)
     
     """pieceLocation : game function to find (x, y) list of respective piece type"""
-    def pieceLocation(self, pieceType) -> list:
+    def pieceLocations(self, pieceType) -> list:
         allPieceLocs, locs = self.getAllRemainingPieces(), list()
         for pieceLoc in allPieceLocs:
             if (self.getBoardPiece(pieceLoc[0], pieceLoc[1]) == pieceType):
@@ -189,20 +187,30 @@ class Chess:
 
     """check: modifies check member variable if check condition for color is met otherwise False"""
     def check(self, color) -> None:
-        if (color == 1):                #check if black king in check
-            if (self.pieceLocation(0xC)[0] in self.getAllLegalMovesColor(1)):
-                self.blackCheck = True
-                self.checkMate(0)       #call checkmate to see if black king in checkmate
-            else: self.blackCheck = False
-        else:                           #check if white king in check
-            if (self.pieceLocation(0xB)[0] in self.getAllLegalMovesColor(0)): 
-                self.whiteCheck = True
-                self.checkMate(1)       #call checkmate to see if white king in checkmate
-            else: self.whiteCheck = False
+        oppColor = (color + 1) % 2
+        if (self.pieceLocations(KINGS[oppColor])[0] in self.getAllLegalMovesColor(color)):
+            self.checkCond[oppColor] = True
+            self.checkMate(oppColor)
+        else: self.checkCond[oppColor] = False
 
-    """checkMate: modifies checkmate member variable if checkmate condition for color is met otherwise False"""
+
+    """checkMate: determines if any possible moves to remove check condition for input color"""
     def checkMate(self, color) -> None:
-        pass
+        #assumed color is in check and responding
+        #iterate through all of color's possible moves
+        #for each, can this move result in a non-checked condition?
+        #if true once => return
+        #if all false => modify check mate flag and return
+
+        
+
+
+
+
+
+        return
+
+
 
     def printGameState(self):
         self.board.print()

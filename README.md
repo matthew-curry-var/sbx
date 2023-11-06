@@ -1,7 +1,7 @@
 # Welcome to the SBX Chess Engine remote repository!
 
 
-#### This is a personal project by Matthew Curry as an exercise in object-oriented programming, efficient algorithmic design, and feature extraction to update a reinforcement learning model. SBX is an ongoing project that will use a mixture of standard tree search and RL feedback to play chess versus humans and other AIs, learned on games played by professional players.
+#### This is a personal project by Matthew Curry as an exercise in object-oriented programming, efficient algorithmic design, and feature extraction to update a reinforcement learning model. SBX is an ongoing project that will use a mixture of standard tree search and RL feedback to play chess versus humans and other AIs, learned on games played by professional players. cd into **./sbx** and run **"python3 main.py"**
 
 
 ![Chess2](./chess-transparent/chessImage2.png)

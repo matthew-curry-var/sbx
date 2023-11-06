@@ -71,6 +71,11 @@ PIECE_SCORE = {
     0xC: 0, #black king
 }
 
+KINGS = {
+    0 : 0xB, #black king
+    1 : 0xC  #white king
+}
+
 """LIFO (Last In First Out) Stack Class"""
 class Stack:
 
