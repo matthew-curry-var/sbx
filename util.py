@@ -42,18 +42,18 @@ BOARD_START_POS = dict({
 """ Mapping Of Board Pieces to ASCII Code """
 CHESS_HEX_TO_ASCII = {
     0x0 : "-",
-    0x1 : "\u265F", #white pawn
-    0x2: "\u2659", #black pawn
-    0x3: "\u265C", #white rook
-    0x4: "\u2656", #black rook
-    0x5: "\u265E", #white knight
-    0x6: "\u2658", #black knight
-    0x7: "\u265D", #white bishop
-    0x8: "\u2657", #black bishop
-    0x9: "\u265B", #white queen
-    0xA: "\u2655", #black queen
-    0xB: "\u265A", #white king
-    0xC: "\u2654" #black king
+    0x2 : "\u265F", #white pawn
+    0x1: "\u2659", #black pawn
+    0x4: "\u265C", #white rook
+    0x3: "\u2656", #black rook
+    0x6: "\u265E", #white knight
+    0x5: "\u2658", #black knight
+    0x8: "\u265D", #white bishop
+    0x7: "\u2657", #black bishop
+    0xA: "\u265B", #white queen
+    0x9: "\u2655", #black queen
+    0xC: "\u265A", #white king
+    0xB: "\u2654" #black king
 }
 
 PIECE_SCORE = {
@@ -72,8 +72,13 @@ PIECE_SCORE = {
 }
 
 KINGS = {
-    0 : 0xB, #black king
-    1 : 0xC  #white king
+    0 : 0xC, #black king
+    1 : 0xB  #white king
+}
+
+COLOR_STR = {
+    0 : "Black", #black
+    1 : "White"  #white
 }
 
 """LIFO (Last In First Out) Stack Class"""

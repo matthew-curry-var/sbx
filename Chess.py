@@ -15,13 +15,19 @@ class Chess:
     """move: take move piece input and implement iff. legal"""
     def move(self, xOrig : int, yOrig : int, xDest : int, yDest : int) -> None:
 
-        if (not (xDest, yDest) in self.getPieceLegalMoves(xOrig, yOrig)):
-            return
-        else:
-            self.board.movePiece(xOrig, yOrig, xDest, yDest)
+        if (not self.checkMateFlag):
+            if (not (xDest, yDest) in self.getPieceLegalMoves(xOrig, yOrig)):
+                print("Not a legal move!")
+                return
+            elif (self.causeCheck(xOrig, yOrig, xDest, yDest)):
+                print("Cannot move into check!")
+                return
+            else:
+                self.board.movePiece(xOrig, yOrig, xDest, yDest)
+
             self.check()
-            self.checkMate()
             self.nextTurn()
+
 
     """getPieceLegalMoves: return list of legal moves according to std chess rules"""
     def getPieceLegalMoves(self, pieceX : int, pieceY : int) -> list:
@@ -60,7 +66,7 @@ class Chess:
                 if (self.isEmpty(cursor.x, cursor.y)): #if empty, add and move on
                     moves.append((cursor.x, cursor.y))
                 else:
-                    if (not self.board.sameColor(cursor.x, cursor.y, color)): #not-empty, add(?) then break
+                    if (not self.board.sameColor(cursor.x, cursor.y, color)): #nonempty and different color
                         moves.append((cursor.x, cursor.y))
                     break
         return moves
@@ -168,13 +174,13 @@ class Chess:
         return moves
     
     """getAllLegalMovesColor: returns a list of all possible moves for all pieces of color type"""
-    def getAllLegalMovesColor(self, color) -> list:
+    def getAllLegalMovesColor(self, color) -> set:
         moves, colorPieces = list(), self.getColorPieces(color)
         for p in colorPieces:
             pMoves = self.getPieceLegalMoves(p[0], p[1])
             if (len(pMoves) != 0): 
                 for m in pMoves: moves.append(m)
-        return moves
+        return set(moves)
     
     """getColorPieces: returns a list of all color pieces by (x, y) coordinates"""
     def getColorPieces(self, color) -> list:
@@ -187,32 +193,47 @@ class Chess:
     def nextTurn(self) -> None:
         self.currentColor = (self.currentColor + 1) % 2
 
-    #test check, checkMate, and getCheckMoves more rigorously 
-
-    """check: modifies check member variable if check condition for color is met otherwise False"""
+    """check: determines if check (and even checkmate) condition are met for non-current color"""
     def check(self) -> None:
-        oppColor = (self.currentColor + 1) % 2
-        if (self.pieceLocations(KINGS[oppColor])[0] in self.getAllLegalMovesColor(self.currentColor)):
-            self.checkCond[oppColor] = True
-        else: self.checkCond[oppColor] = False
+        opp_king_color = (self.currentColor + 1) % 2
+        opp_king_loc = self.pieceLocations(KINGS[opp_king_color])[0]
 
-    """checkMate: determines if checkmate condition met for non-current color"""
-    def checkMate(self) -> None:
-        if (self.checkCond[(self.currentColor + 1) % 2] and (len(self.getCheckMoves()) == 0)): self.checkMateFlag = True
+        # Check if the king is under threat
+        if opp_king_loc in self.getAllLegalMovesColor(self.currentColor):
+            self.checkCond[opp_king_color] = True
+            if (len(self.getCheckMoves(opp_king_color)) == 0):
+                self.checkMateFlag = True
+        else:
+            self.checkCond[opp_king_color] = False
 
-    """getCheckMoves: return list of moves given that current color is imposing check"""
-    def getCheckMoves(self) -> list:
-        moves, oppColor = list(), (self.currentColor + 1) % 2
-        for p in self.getColorPieces(oppColor):
-            for m in self.getPieceLegalMoves(p[0], p[1]):
-                r = self.getBoardPiece(p[0], p[1])
-                self.move(p[0], p[1], m[0], m[1])
-                if (not self.pieceLocations(KINGS[oppColor])[0] in self.getAllLegalMovesColor(self.currentColor)):
-                    moves.append(m[0], m[1])
-                self.move(m[0], m[1], p[0], p[1])
-                self.board.place(m[0], m[1], r)
-        return moves
+    """causeCheck: determines if given move (x0, y0, x1, y1) causes check condition for current color"""
+    def causeCheck(self, x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
+        check, r = False, self.getBoardPiece(x1, y1)
+        self.board.movePiece(x0, y0, x1, y1) #temporarily implement moves
+        
+        if (self.pieceLocations(KINGS[self.currentColor])[0] in self.getAllLegalMovesColor((self.currentColor + 1) % 2)):
+            check = True
+        
+        self.board.movePiece(x1, y1, x0, y0)
+        self.board.place(x1, y1, r)
+        return check
     
+    """getCheckMoves: return list of moves for color given that color's check condition equals True"""
+    def getCheckMoves(self, color) -> set:
+        moves = list()
+        for p in self.getColorPieces(color):
+            px, py = p[0], p[1]
+            for m in self.getPieceLegalMoves(px, py):
+                mx, my = m[0], m[1]
+                r = self.getBoardPiece(mx, my)
+                self.board.movePiece(px, py, mx, my)
+                if (not self.pieceLocations(KINGS[color])[0] in self.getAllLegalMovesColor((color + 1) % 2)): 
+                    moves.append((mx, my))
+                self.board.movePiece(mx, my, px, py)
+                self.board.place(mx, my, r)
+
+        return set(moves)
+
     """printGameState: call board print function"""
     def printGameState(self):
         self.board.print()
