@@ -14,7 +14,7 @@ class Chess:
 
     """move: take move piece input and implement iff. legal"""
     def move(self, xOrig : int, yOrig : int, xDest : int, yDest : int) -> None:
-
+        self.check()
         if (not self.checkMateFlag):
             if (not (xDest, yDest) in self.getPieceLegalMoves(xOrig, yOrig)):
                 print("Not a legal move!")
@@ -24,16 +24,13 @@ class Chess:
                 return
             else:
                 self.board.movePiece(xOrig, yOrig, xDest, yDest)
-
-            self.check()
-            self.nextTurn()
-
+                self.nextTurn()
 
     """getPieceLegalMoves: return list of legal moves according to std chess rules"""
     def getPieceLegalMoves(self, pieceX : int, pieceY : int) -> list:
         piece = self.board.getPiece(pieceX, pieceY)
-        color = piece % 2 #0/1
         if (not piece is None):
+            color = piece % 2 #0/1
             if (piece == 0x01 or piece == 0x02):    return self.pawnMove(pieceX, pieceY, color) #Pawn
             elif (piece == 0x03 or piece == 0x04):  return self.rookMove(pieceX, pieceY, color) #Rook
             elif (piece == 0x05 or piece == 0x06):  return self.knightMove(pieceX, pieceY, color) #Knight
@@ -237,5 +234,3 @@ class Chess:
     """printGameState: call board print function"""
     def printGameState(self):
         self.board.print()
-
-    

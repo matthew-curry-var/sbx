@@ -1,5 +1,5 @@
 import time
-from util import BOARD_START_POS, BOARD_LEN, EMPTY_SQ, CHESS_HEX_TO_ASCII
+from util import BOARD_START_POS, BOARD_LEN, EMPTY_SQ, CHESS_HEX_TO_ASCII, CHESS_NUM_ALPHA_COLS
 
 class BoardState:
 
@@ -49,8 +49,17 @@ class BoardState:
     """print : fancy print function for terminal printing"""
     def print(self):
         print("Board State @ ", time.time())
+        
+        #Print board rows
         for y in reversed(range(len(self.matrix))):
-            print("|", end="")
+            print(str(y + 1) + " ", end="")
+            print(" |", end="")
             for x in range(len(self.matrix)):
                 print(f'{str(CHESS_HEX_TO_ASCII[self.matrix[x][y]]):3}', end="")
             print("|", end="\n")
+
+        #Print board alpha columns
+        print("    ", end="")
+        for y in range(len(self.matrix)):
+            print(f'{str(CHESS_NUM_ALPHA_COLS[y]):3}', end="")
+        print(end="\n")

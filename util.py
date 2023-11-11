@@ -81,6 +81,28 @@ COLOR_STR = {
     1 : "White"  #white
 }
 
+CHESS_NUM_ALPHA_COLS = {
+    0: "a",
+    1: "b",
+    2: "c",
+    3: "d",
+    4: "e",
+    5: "f",
+    6: "g",
+    7: "h"
+}
+
+CHESS_ALPHA_NUM_COLS = {
+    "a": 0,
+    "b": 1,
+    "c": 2,
+    "d": 3,
+    "e": 4,
+    "f": 5, 
+    "g": 6,
+    "h": 7
+}
+
 """LIFO (Last In First Out) Stack Class"""
 class Stack:
 
@@ -175,3 +197,7 @@ def knightL8(c : Cursor) -> None:
 """listToDict: convert list to dictionary where list elements are keys w default val"""
 def listToDict(listVar : list, defVal : int) -> dict:
     return {listVar[i]: defVal for i in range(0, len(listVar))}
+
+"""str_to_int: convert a string into list of strings"""
+def str_to_lst(strVar : list) -> list:
+    return [strVar[i] for i in range(len(strVar))]

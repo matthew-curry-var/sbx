@@ -3,6 +3,9 @@ from util import PIECE_SCORE, Stack
 
 class LenaAI:
 
+
+    #Implementation not yet released.
+
     def __init__(self, colorInput):
         self.color = colorInput
         self.layerFuncs = [max, min]
