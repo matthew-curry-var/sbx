@@ -13,8 +13,7 @@ class Chess:
         self.currentColor = 1
 
     """move: take move piece input and implement iff. legal"""
-    def move(self, xOrig : int, yOrig : int, xDest : int, yDest : int) -> None:
-        self.check()
+    def move(self, xOrig : int, yOrig : int, xDest : int, yDest : int) -> None: 
         if (not self.checkMateFlag):
             if (not (xDest, yDest) in self.getPieceLegalMoves(xOrig, yOrig)):
                 print("Not a legal move!")
@@ -24,6 +23,7 @@ class Chess:
                 return
             else:
                 self.board.movePiece(xOrig, yOrig, xDest, yDest)
+                self.check()
                 self.nextTurn()
 
     """getPieceLegalMoves: return list of legal moves according to std chess rules"""
@@ -190,23 +190,24 @@ class Chess:
     def nextTurn(self) -> None:
         self.currentColor = (self.currentColor + 1) % 2
 
-    """check: determines if check (and even checkmate) condition are met for non-current color"""
+    """check: determines if check condition is met for both black and white"""
     def check(self) -> None:
-        opp_king_color = (self.currentColor + 1) % 2
-        opp_king_loc = self.pieceLocations(KINGS[opp_king_color])[0]
+        #Check white check condition
+        if (self.pieceLocations(KINGS[1])[0] in self.getAllLegalMovesColor(0)):
+            self.checkCond[1] = True
+            if (not self.getCheckMoves(1)): self.checkMateFlag = True
+        else: self.checkCond[1] = False
 
-        # Check if the king is under threat
-        if opp_king_loc in self.getAllLegalMovesColor(self.currentColor):
-            self.checkCond[opp_king_color] = True
-            if (len(self.getCheckMoves(opp_king_color)) == 0):
-                self.checkMateFlag = True
-        else:
-            self.checkCond[opp_king_color] = False
-
+        #Check black check condition
+        if (self.pieceLocations(KINGS[0])[0] in self.getAllLegalMovesColor(1)):
+            self.checkCond[0] = True
+            if (not self.getCheckMoves(0)): self.checkMateFlag = True
+        else: self.checkCond[0] = False
+        
     """causeCheck: determines if given move (x0, y0, x1, y1) causes check condition for current color"""
     def causeCheck(self, x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
         check, r = False, self.getBoardPiece(x1, y1)
-        self.board.movePiece(x0, y0, x1, y1) #temporarily implement moves
+        self.board.movePiece(x0, y0, x1, y1) #temporarily implement move
         
         if (self.pieceLocations(KINGS[self.currentColor])[0] in self.getAllLegalMovesColor((self.currentColor + 1) % 2)):
             check = True
