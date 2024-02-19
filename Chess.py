@@ -2,54 +2,124 @@ from BoardState import *
 from util import *
 from cursor import *
 
-colorFuncMap = dict()
-
 class Chess:
 
     def __init__(self):
         self.board = BoardState()
-        self.checkCond = {0 : False, 1 : False}
-        self.checkMateFlag = False
+        self.moves = {0: None, 1: None}
+        self.kingLocs = {0: (4, 7), 1: (4, 0)}
+        self.checkMate = {0: False, 1: False}
         self.currentColor = 1
 
-    """move: take move piece input and implement iff. legal"""
-    def move(self, xOrig : int, yOrig : int, xDest : int, yDest : int) -> None: 
-        if (not self.checkMateFlag):
-            if (not (xDest, yDest) in self.getPieceLegalMoves(xOrig, yOrig)):
-                print("Not a legal move!")
-                return
-            elif (self.causeCheck(xOrig, yOrig, xDest, yDest)):
-                print("Cannot move into check!")
-                return
-            else:
-                self.board.movePiece(xOrig, yOrig, xDest, yDest)
-                self.check()
-                self.nextTurn()
+    """move: take move piece input and implement iff. legal according to piece move and check rules"""
+    def move(self, xOrig : int, yOrig : int, xDest : int, yDest : int) -> None:
+        self.findLegalMoves(self.currentColor)                                      #Find legal moves for moving current player
+        print("Move Input: ", (xOrig, yOrig, xDest, yDest))
+        if ((xOrig, yOrig, xDest, yDest) in self.moves[self.currentColor]):         #If (xOrig, yOrig, xDest, yDest) is a legal move
+            if (not self.checkMate[self.currentColor]):                             #If self.currentColor not in checkmate
+                self.board.movePiece(xOrig, yOrig, xDest, yDest)                    #Apply move
+                piece = self.getBoardPiece(xDest, yDest)
+                if (piece == 0xB):                                                  #If piece moved is white king
+                    self.kingLocs[1] = (xDest, yDest)
+                elif(piece == 0xC):                                                 #If piece moved is black king
+                    self.kingLocs[0] = (xDest, yDest)
+                self.currentColor = (self.currentColor + 1) % 2                     #Next turn
+
+
+    """fingLegalMoves: find legal moves for color (includes check filtereing)"""
+    def findLegalMoves(self, color) -> None:
+        moves = self.allPiecewiseMoves(color)                                       #Get all legal piecewise moves for color
+        moves = self.checkMoves(moves, color)                                       #Check filter
+        if (not len(moves)): self.checkMate[color] = True                           #Checkmate flag
+        print("Color: ", color)
+        print("Legal Moves: ", moves)
+        self.moves[color] = moves                                                   #Add moves to object member
+
+    """legalPiecewiseMoves: returns flattened list of all moves for a given color by piece rules (no check filtering)"""
+    def allPiecewiseMoves(self, color) -> list:
+        legalMoves = list()
+        for coord in self.getColorCoords(color):
+            moves = self.getPieceLegalMoves(coord[0], coord[1])
+            if (moves):
+                for m in moves:
+                    legalMoves.append(m)
+        return legalMoves
+
+    "checkCondition: return True iff currColor's king is in enemy move list"
+    def checkCondition(self, currColor) -> bool:
+        oppColor = (currColor + 1) % 2 
+        oppMoves = self.allPiecewiseMoves(oppColor)
+        for oppMove in oppMoves:
+            if (self.kingLocs[currColor] == (oppMove[2], oppMove[3])):
+                return True
+        return False
+    
+    """checkMoves: filters out moves that impose check condition on current color"""
+    def checkMoves(self, moveList, currColor) -> list:
+        legalMoves, oppColor = list(), (currColor + 1) % 2
+        for move in moveList:
+            king = self.isKing(move[0], move[1])                            #Determine if moving piece is king
+            temp = self.getBoardPiece(move[2], move[3])                     #Get board piece at destination
+            self.board.movePiece(move[0], move[1], move[2], move[3])        #Apply move from theoretical moveList
+            if (king): self.kingLocs[king % 2] = (move[2], move[3])         #If king, update kingLoc
+            legal = True
+            for oppMove in self.allPiecewiseMoves(oppColor):                #Iterate through opponent piece-legal moves
+                if (self.kingLocs[currColor] == (oppMove[2], oppMove[3])):  
+                    legal = False
+                    break
+            if (legal):
+                legalMoves.append(move)
+
+            self.board.movePiece(move[2], move[3], move[0], move[1])        #Return theoretical piece
+            if (king): self.kingLocs[king % 2] = (move[0], move[1])         #Re-update kingLoc if necessary
+            self.board.place(move[2], move[3], temp)                        #Return board piece from destination
+        return legalMoves
+    
+    def isKing(self, x, y):
+        p = self.getBoardPiece(x, y)
+        if (p == 0xB or p == 0xC):
+            return p
+        return 0
+
+    """getColorCoords: return list of (x,y) coordinates where each piece is of a given input color"""
+    def getColorCoords(self, color) -> list:
+        coords = list()
+        for x in range(BOARD_LEN):
+            for y in range(BOARD_LEN):
+                piece = self.getBoardPiece(x, y)
+                if (piece and (piece % 2) == color):
+                    coords.append((x, y))
+        return coords
 
     """getPieceLegalMoves: return list of legal moves according to std chess rules"""
     def getPieceLegalMoves(self, pieceX : int, pieceY : int) -> list:
-        piece = self.board.getPiece(pieceX, pieceY)
-        if (not piece is None):
-            color = piece % 2 #0/1
-            if (piece == 0x01 or piece == 0x02):    return self.pawnMove(pieceX, pieceY, color) #Pawn
-            elif (piece == 0x03 or piece == 0x04):  return self.rookMove(pieceX, pieceY, color) #Rook
-            elif (piece == 0x05 or piece == 0x06):  return self.knightMove(pieceX, pieceY, color) #Knight
-            elif (piece == 0x07 or piece == 0x08):  return self.bishopMove(pieceX, pieceY, color) #Bishop
-            elif (piece == 0x09 or piece == 0x0A):  return self.queenMove(pieceX, pieceY, color) #Queen
-            elif (piece == 0x0B or piece == 0x0C):  return self.kingMove(pieceX, pieceY, color) #King
-        return list()
-
-    """isEmpty :  helper function that identifies if a location (x, y) is empty"""
-    def isEmpty(self, x, y) -> bool:
-        if (self.board.getPiece(x,y) is None):
-            return True
-        return False
+        piece = self.getBoardPiece(pieceX, pieceY)
+        if (piece):
+            color = piece % 2   #0/1
+            if (piece == 0x01 or piece == 0x02):
+                moveDests = self.pawnMove(pieceX, pieceY, color)     #Pawn
+            elif (piece == 0x03 or piece == 0x04):  
+                moveDests = self.rookMove(pieceX, pieceY, color)     #Rook
+            elif (piece == 0x05 or piece == 0x06):  
+                moveDests = self.knightMove(pieceX, pieceY, color)   #Knight
+            elif (piece == 0x07 or piece == 0x08):  
+                moveDests = self.bishopMove(pieceX, pieceY, color)   #Bishop
+            elif (piece == 0x09 or piece == 0x0A):  
+                moveDests = self.queenMove(pieceX, pieceY, color)    #Queen
+            elif (piece == 0x0B or piece == 0x0C):  
+                moveDests = self.kingMove(pieceX, pieceY, color)     #King
+        return self.prependLoc(pieceX, pieceY, moveDests)
     
-    """getBoardPiece : helper function to get the id hex code for a piece at (x, y), 0 otherwise"""
+    """prependLoc: prepend origin coordinate to each tuple in destination locations list"""
+    def prependLoc(self, x0 : int, y0 : int, destLocs : list) -> list:
+        moves = list()
+        for dest in destLocs:
+            moves.append((x0, y0, dest[0], dest[1]))
+        return moves
+
+    """getBoardPiece: helper function to get the id hex code for a piece at (x, y), 0 otherwise"""
     def getBoardPiece(self, x, y) -> int:
-        if (not self.isEmpty(x, y)):
-            return self.board.getPiece(x, y)
-        return 0
+        return self.board.getPiece(x, y)
     
     """pieceMoveLogic: helper func to return list of legal moves acc. to location, color, and directional mapping"""
     def pieceMoveLogic(self, x, y, color, dirMap) -> list:
@@ -60,49 +130,67 @@ class Chess:
             cursor.modifyUpdateFunc(dir)
             for i in range(dirMap[dir]):
                 cursor.update()
-                if (self.isEmpty(cursor.x, cursor.y)): #if empty, add and move on
+                if (not self.getBoardPiece(cursor.x, cursor.y)): #if empty, add and move on
                     moves.append((cursor.x, cursor.y))
                 else:
-                    if (not self.board.sameColor(cursor.x, cursor.y, color)): #nonempty and different color
+                    if (self.getBoardPiece(cursor.x, cursor.y) % 2 != color % 2): #nonempty and different color
                         moves.append((cursor.x, cursor.y))
                     break
         return moves
     
-    """pawnMove : game function to return the list of legal pawn moves"""
+    """pawnMove: game function to return the list of legal pawn moves"""
     def pawnMove(self, x, y, color) -> list:
         moves = list()
-        
         if (color == 1):    #white pawn (need to add promotion ability)
-            if (y < 7):
-                if (self.isEmpty(x, y + 1)): moves.append((x, y + 1))
-                if (x > 0):
-                    if (not self.isEmpty(x - 1, y + 1) and self.board.isBlack(x - 1, y + 1)): moves.append((x - 1,y + 1))
-                if (x < 7):
-                    if (not self.isEmpty(x + 1, y + 1) and self.board.isBlack(x - 1, y + 1)): moves.append((x + 1, y + 1))
             if (y == 1):
-                if (self.isEmpty(x, y + 1) and self.isEmpty(x, y + 2)): moves.append((x, y + 2))
-        else:               #black pawn (need to add promotion ability)
-            if (y > 0):
-                if (self.isEmpty(x, y - 1)): moves.append((x, y - 1))
+                if (not self.getBoardPiece(x, y + 1)):
+                    moves.append((x, y + 1))
+                    if (not self.getBoardPiece(x, y + 2)):
+                        moves.append((x, y + 2))
+                    
+            elif (y < 7):
+                if (not self.getBoardPiece(x, y + 1)): 
+                    moves.append((x, y + 1))
                 if (x > 0):
-                    if (not self.isEmpty(x - 1, y - 1) and self.board.isWhite(x - 1, y - 1)): moves.append((x - 1, y - 1))
+                    topLeft = self.getBoardPiece(x - 1, y + 1)
+                    if (topLeft and (topLeft % 2 == 0)): 
+                        moves.append((x - 1,y + 1))
                 if (x < 7):
-                    if (not self.isEmpty(x + 1, y - 1) and self.board.isWhite(x + 1, y - 1)): moves.append((x + 1, y - 1))
+                    topRight = self.getBoardPiece(x + 1, y + 1)
+                    if (topRight and (topRight % 2 == 0)): 
+                        moves.append((x + 1, y + 1))
+
+        else:               #black pawn (need to add promotion ability)
             if (y == 6):
-                if (self.isEmpty(x, y - 1) and self.isEmpty(x, y - 2)): moves.append((x, y - 2))
+                if (not self.getBoardPiece(x, y - 1)):
+                    moves.append((x, y - 1))
+                    if (not self.getBoardPiece(x, y - 2)):
+                        moves.append((x, y - 2))
+            elif (y > 0):
+                if (not self.getBoardPiece(x, y - 1)): 
+                    moves.append((x, y - 1))
+                if (x > 0):
+                    botLeft = self.getBoardPiece(x - 1, y - 1)
+                    if (botLeft and (botLeft % 2 == 1)): 
+                        moves.append((x - 1, y - 1))
+                if (x < 7):
+                    botRight = self.getBoardPiece(x + 1, y - 1)
+                    if (botRight and (botRight % 2 == 1)): 
+                        moves.append((x + 1, y - 1))
+   
         return moves
 
-    """rookMove : game function to return list of legal rook moves"""
+    """rookMove: game function to return list of legal rook moves"""
     def rookMove(self, x, y, color) -> list:
         directions = {right: 7 - x, left: x, up: 7 - y, down: y}
         return self.pieceMoveLogic(x, y, color, directions)
     
-    """bishopMove : game function to return list of legal bishop moves"""
+    """bishopMove: game function to return list of legal bishop moves"""
     def bishopMove(self, x, y, color) -> list:
         directions = {upRight : min((7 - x), (7 - y)), downRight: min((7 - x), y), upLeft: min(x, (7 - y)), downLeft: min(x, y)}
         return self.pieceMoveLogic(x, y, color, directions)
     
-    """knightMove : game function to return list of legal knight moves"""
+    """knightMove: game function to return list of legal knight moves"""
     def knightMove(self, x, y, color) -> list:
         directions = list((knightL1, knightL2, knightL3, knightL4, knightL5, knightL6, knightL7, knightL8))
         
@@ -121,14 +209,13 @@ class Chess:
         else: dirY = directions
 
         directions = listToDict(list(set(dirX) & set(dirY)), defVal = 1)
-
         return self.pieceMoveLogic(x, y, color, directions)
     
-    """queenMove : game function to return list of legal queen moves"""
+    """queenMove: game function to return list of legal queen moves"""
     def queenMove(self, x, y, color) -> list:
         return self.bishopMove(x, y, color) + self.rookMove(x, y, color)
     
-    """kingMove : game function to return list of legal king moves"""
+    """kingMove: game function to return list of legal king moves"""
     def kingMove(self, x, y, color) -> list:
         directions = list((upLeft, up, upRight, right, downRight, down, downLeft, left))
 
@@ -143,94 +230,6 @@ class Chess:
         directions = listToDict(list(set(dirX) & set(dirY)), defVal=1)
         
         return self.pieceMoveLogic(x, y, color, directions)
-    
-    """pieceLocation : game function to find (x, y) list of respective piece type"""
-    def pieceLocations(self, pieceType) -> list:
-        allPieceLocs, locs = self.getAllRemainingPieces(), list()
-        for pieceLoc in allPieceLocs:
-            if (self.getBoardPiece(pieceLoc[0], pieceLoc[1]) == pieceType):
-                locs.append(pieceLoc)
-        return locs
-
-    """getAllRemainingPieces: returns a list of pieces on board by coordinates"""
-    def getAllRemainingPieces(self) -> list:
-        pieces = list()
-        for y in range(8):
-            for x in range(8):
-                if (not self.isEmpty(x, y)): pieces.append((x, y))
-        return pieces
-
-    """getAllLegalMoves: returns a list of all possible moves for all pieces on board"""
-    def getAllLegalMoves(self) -> list:
-        moves = list()
-        for y in range(8):
-            for x in range(8):
-                pMoves = self.getPieceLegalMoves(x, y)
-                if (len(pMoves) != 0): 
-                    for m in pMoves: moves.append(m)
-        return moves
-    
-    """getAllLegalMovesColor: returns a list of all possible moves for all pieces of color type"""
-    def getAllLegalMovesColor(self, color) -> set:
-        moves, colorPieces = list(), self.getColorPieces(color)
-        for p in colorPieces:
-            pMoves = self.getPieceLegalMoves(p[0], p[1])
-            if (len(pMoves) != 0): 
-                for m in pMoves: moves.append(m)
-        return set(moves)
-    
-    """getColorPieces: returns a list of all color pieces by (x, y) coordinates"""
-    def getColorPieces(self, color) -> list:
-        dPieces, pieces = list(), self.getAllRemainingPieces()
-        for c in pieces:
-            if (self.board.sameColor(c[0], c[1], color)): dPieces.append(c)
-        return dPieces
-
-    """nextTurn: updates necessary variables when we go to the next turn"""
-    def nextTurn(self) -> None:
-        self.currentColor = (self.currentColor + 1) % 2
-
-    """check: determines if check condition is met for both black and white"""
-    def check(self) -> None:
-        #Check white check condition
-        if (self.pieceLocations(KINGS[1])[0] in self.getAllLegalMovesColor(0)):
-            self.checkCond[1] = True
-            if (not self.getCheckMoves(1)): self.checkMateFlag = True
-        else: self.checkCond[1] = False
-
-        #Check black check condition
-        if (self.pieceLocations(KINGS[0])[0] in self.getAllLegalMovesColor(1)):
-            self.checkCond[0] = True
-            if (not self.getCheckMoves(0)): self.checkMateFlag = True
-        else: self.checkCond[0] = False
-        
-    """causeCheck: determines if given move (x0, y0, x1, y1) causes check condition for current color"""
-    def causeCheck(self, x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
-        check, r = False, self.getBoardPiece(x1, y1)
-        self.board.movePiece(x0, y0, x1, y1) #temporarily implement move
-        
-        if (self.pieceLocations(KINGS[self.currentColor])[0] in self.getAllLegalMovesColor((self.currentColor + 1) % 2)):
-            check = True
-        
-        self.board.movePiece(x1, y1, x0, y0)
-        self.board.place(x1, y1, r)
-        return check
-    
-    """getCheckMoves: return list of moves for color given that color's check condition equals True"""
-    def getCheckMoves(self, color) -> set:
-        moves = list()
-        for p in self.getColorPieces(color):
-            px, py = p[0], p[1]
-            for m in self.getPieceLegalMoves(px, py):
-                mx, my = m[0], m[1]
-                r = self.getBoardPiece(mx, my)
-                self.board.movePiece(px, py, mx, my)
-                if (not self.pieceLocations(KINGS[color])[0] in self.getAllLegalMovesColor((color + 1) % 2)): 
-                    moves.append((mx, my))
-                self.board.movePiece(mx, my, px, py)
-                self.board.place(mx, my, r)
-
-        return set(moves)
 
     """printGameState: call board print function"""
     def printGameState(self):
