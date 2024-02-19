@@ -14,7 +14,7 @@ class Chess:
     """move: take move piece input and implement iff. legal according to piece move and check rules"""
     def move(self, xOrig : int, yOrig : int, xDest : int, yDest : int) -> None:
         self.findLegalMoves(self.currentColor)                                      #Find legal moves for moving current player
-        print("Move Input: ", (xOrig, yOrig, xDest, yDest))
+        #print("Move Input: ", (xOrig, yOrig, xDest, yDest))
         if ((xOrig, yOrig, xDest, yDest) in self.moves[self.currentColor]):         #If (xOrig, yOrig, xDest, yDest) is a legal move
             if (not self.checkMate[self.currentColor]):                             #If self.currentColor not in checkmate
                 self.board.movePiece(xOrig, yOrig, xDest, yDest)                    #Apply move
@@ -25,14 +25,13 @@ class Chess:
                     self.kingLocs[0] = (xDest, yDest)
                 self.currentColor = (self.currentColor + 1) % 2                     #Next turn
 
-
     """fingLegalMoves: find legal moves for color (includes check filtereing)"""
     def findLegalMoves(self, color) -> None:
         moves = self.allPiecewiseMoves(color)                                       #Get all legal piecewise moves for color
         moves = self.checkMoves(moves, color)                                       #Check filter
         if (not len(moves)): self.checkMate[color] = True                           #Checkmate flag
-        print("Color: ", color)
-        print("Legal Moves: ", moves)
+        #print("Color: ", color)
+        #print("Legal Moves: ", moves)
         self.moves[color] = moves                                                   #Add moves to object member
 
     """legalPiecewiseMoves: returns flattened list of all moves for a given color by piece rules (no check filtering)"""
@@ -75,6 +74,7 @@ class Chess:
             self.board.place(move[2], move[3], temp)                        #Return board piece from destination
         return legalMoves
     
+    """isKing: returns value of king (if king), 0 otherwise"""
     def isKing(self, x, y):
         p = self.getBoardPiece(x, y)
         if (p == 0xB or p == 0xC):

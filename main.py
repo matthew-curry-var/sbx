@@ -6,7 +6,6 @@ import re
 
 def main():
 
-    
     chessGame = Chess()
     while (True) :
         chessGame.printGameState()
