@@ -30,8 +30,6 @@ class Chess:
         moves = self.allPiecewiseMoves(color)                                       #Get all legal piecewise moves for color
         moves = self.checkMoves(moves, color)                                       #Check filter
         if (not len(moves)): self.checkMate[color] = True                           #Checkmate flag
-        #print("Color: ", color)
-        #print("Legal Moves: ", moves)
         self.moves[color] = moves                                                   #Add moves to object member
 
     """legalPiecewiseMoves: returns flattened list of all moves for a given color by piece rules (no check filtering)"""
@@ -75,7 +73,7 @@ class Chess:
         return legalMoves
     
     """isKing: returns value of king (if king), 0 otherwise"""
-    def isKing(self, x, y):
+    def isKing(self, x, y) -> int:
         p = self.getBoardPiece(x, y)
         if (p == 0xB or p == 0xC):
             return p

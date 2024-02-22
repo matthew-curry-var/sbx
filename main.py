@@ -10,6 +10,13 @@ def main():
     while (True) :
         chessGame.printGameState()
 
+        if (chessGame.checkMate[0] == True):
+            print("White wins!")
+            break
+        elif (chessGame.checkMate[1] == True):
+            print("Black wins!")
+            break
+
         print("White King Loc: ", chessGame.kingLocs[1])
         print("Black King Loc: ", chessGame.kingLocs[0])
         
@@ -17,5 +24,7 @@ def main():
         inputs = re.match(pattern=r"^\d{4}", string=inputVal)
         inputsList = list(inputs.group(0))
         chessGame.move(int(inputsList[0]), int(inputsList[1]), int(inputsList[2]), int(inputsList[3]))
+
+
 
 main()
