@@ -8,7 +8,7 @@
 
 #### This is a personal project that I am still developing actively (as of 3/5/2024) as an exercise in OOP, design, search algorithms, and (eventually) web application.
 
-#### Some next aspects for this project: (1) GUI representation, (2) Testing Suite
+#### Some next aspects for this project: (1) Improve evaluation functions, (2) GUI representation, (3) Fully integrated test suite
 
 ![User vs AI example](https://github.com/matthew-curry-var/sbx/blob/master/img/chess2.png)
 
