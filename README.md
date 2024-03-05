@@ -8,5 +8,5 @@
 
 ### This is a personal project that I am still developing actively (as of 3/5/2024) as an exercise in OOP, design, search algorithms, and (eventually) web application.
 
-
+![User vs AI example](https://github.com/matthew-curry-var/sbx/blob/master/img/chess2.png)
 
