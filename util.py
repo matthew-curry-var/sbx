@@ -56,7 +56,7 @@ CHESS_HEX_TO_ASCII = {
     0xB: "\u2654" #black king
 }
 
-PIECE_SCORE = {
+CHESS_PIECE_SCORE = {
     0x1: 1, #white pawn
     0x2: 1, #black pawn
     0x3: 5, #white rook
@@ -67,8 +67,8 @@ PIECE_SCORE = {
     0x8: 3, #black bishop
     0x9: 9, #white queen
     0xA: 9, #black queen
-    0xB: 0, #white king
-    0xC: 0, #black king
+    0xB: 200, #white king
+    0xC: 200, #black king
 }
 
 KINGS = {

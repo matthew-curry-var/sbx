@@ -10,13 +10,17 @@ class Chess:
         self.kingLocs = {0: (4, 7), 1: (4, 0)}
         self.checkMate = {0: False, 1: False}
         self.currentColor = 1
+        self.findLegalMoves(0)
+        self.findLegalMoves(1)
+
+    """applyMove: take move input as tuple and send to move function"""
+    def applyMove(self, move : tuple) -> None:
+        self.move(int(move[0]), int(move[1]), int(move[2]), int(move[3]))
 
     """move: take move piece input and implement iff. legal according to piece move and check rules"""
     def move(self, xOrig : int, yOrig : int, xDest : int, yDest : int) -> None:
-        self.findLegalMoves(self.currentColor)                                      #Find legal moves for moving current player
-        #print("Move Input: ", (xOrig, yOrig, xDest, yDest))
-        if ((xOrig, yOrig, xDest, yDest) in self.moves[self.currentColor]):         #If (xOrig, yOrig, xDest, yDest) is a legal move
-            if (not self.checkMate[self.currentColor]):                             #If self.currentColor not in checkmate
+        if (not self.checkMate[self.currentColor]):
+            if ((xOrig, yOrig, xDest, yDest) in self.moves[self.currentColor]):
                 self.board.movePiece(xOrig, yOrig, xDest, yDest)                    #Apply move
                 piece = self.getBoardPiece(xDest, yDest)
                 if (piece == 0xB):                                                  #If piece moved is white king
@@ -24,13 +28,21 @@ class Chess:
                 elif(piece == 0xC):                                                 #If piece moved is black king
                     self.kingLocs[0] = (xDest, yDest)
                 self.currentColor = (self.currentColor + 1) % 2                     #Next turn
+                self.findLegalMoves(0)
+                self.findLegalMoves(1)
 
     """fingLegalMoves: find legal moves for color (includes check filtereing)"""
-    def findLegalMoves(self, color) -> None:
+    def findLegalMoves(self, color : int) -> None:
         moves = self.allPiecewiseMoves(color)                                       #Get all legal piecewise moves for color
         moves = self.checkMoves(moves, color)                                       #Check filter
         if (not len(moves)): self.checkMate[color] = True                           #Checkmate flag
         self.moves[color] = moves                                                   #Add moves to object member
+
+    """returnLegalMoves: helper function to return legal moves outside of the class"""
+    def returnLegalMoves(self, color : int) -> list:
+        moves = self.allPiecewiseMoves(color)
+        moves = self.checkMoves(moves, color)
+        return moves
 
     """legalPiecewiseMoves: returns flattened list of all moves for a given color by piece rules (no check filtering)"""
     def allPiecewiseMoves(self, color) -> list:
@@ -55,21 +67,27 @@ class Chess:
     def checkMoves(self, moveList, currColor) -> list:
         legalMoves, oppColor = list(), (currColor + 1) % 2
         for move in moveList:
+
+            #Apply move temporarily
             king = self.isKing(move[0], move[1])                            #Determine if moving piece is king
             temp = self.getBoardPiece(move[2], move[3])                     #Get board piece at destination
             self.board.movePiece(move[0], move[1], move[2], move[3])        #Apply move from theoretical moveList
             if (king): self.kingLocs[king % 2] = (move[2], move[3])         #If king, update kingLoc
+
+            #Determine if temporary move results in check condition
             legal = True
             for oppMove in self.allPiecewiseMoves(oppColor):                #Iterate through opponent piece-legal moves
-                if (self.kingLocs[currColor] == (oppMove[2], oppMove[3])):  
+                if (self.kingLocs[currColor] == (oppMove[2], oppMove[3])):  #Break if king's location is in opponents path
                     legal = False
                     break
             if (legal):
                 legalMoves.append(move)
 
+            #Restore board
             self.board.movePiece(move[2], move[3], move[0], move[1])        #Return theoretical piece
             if (king): self.kingLocs[king % 2] = (move[0], move[1])         #Re-update kingLoc if necessary
             self.board.place(move[2], move[3], temp)                        #Return board piece from destination
+
         return legalMoves
     
     """isKing: returns value of king (if king), 0 otherwise"""
@@ -144,19 +162,19 @@ class Chess:
                 if (not self.getBoardPiece(x, y + 1)):
                     moves.append((x, y + 1))
                     if (not self.getBoardPiece(x, y + 2)):
-                        moves.append((x, y + 2))
-                    
+                        moves.append((x, y + 2))    
             elif (y < 7):
                 if (not self.getBoardPiece(x, y + 1)): 
                     moves.append((x, y + 1))
-                if (x > 0):
-                    topLeft = self.getBoardPiece(x - 1, y + 1)
-                    if (topLeft and (topLeft % 2 == 0)): 
-                        moves.append((x - 1,y + 1))
-                if (x < 7):
-                    topRight = self.getBoardPiece(x + 1, y + 1)
-                    if (topRight and (topRight % 2 == 0)): 
-                        moves.append((x + 1, y + 1))
+
+            if (x > 0):
+                topLeft = self.getBoardPiece(x - 1, y + 1)
+                if (topLeft and (topLeft % 2 == 0)): 
+                    moves.append((x - 1,y + 1))
+            if (x < 7):
+                topRight = self.getBoardPiece(x + 1, y + 1)
+                if (topRight and (topRight % 2 == 0)): 
+                    moves.append((x + 1, y + 1))
 
         else:               #black pawn (need to add promotion ability)
             if (y == 6):
@@ -167,14 +185,15 @@ class Chess:
             elif (y > 0):
                 if (not self.getBoardPiece(x, y - 1)): 
                     moves.append((x, y - 1))
-                if (x > 0):
-                    botLeft = self.getBoardPiece(x - 1, y - 1)
-                    if (botLeft and (botLeft % 2 == 1)): 
-                        moves.append((x - 1, y - 1))
-                if (x < 7):
-                    botRight = self.getBoardPiece(x + 1, y - 1)
-                    if (botRight and (botRight % 2 == 1)): 
-                        moves.append((x + 1, y - 1))
+
+            if (x > 0):
+                botLeft = self.getBoardPiece(x - 1, y - 1)
+                if (botLeft and (botLeft % 2 == 1)): 
+                    moves.append((x - 1, y - 1))
+            if (x < 7):
+                botRight = self.getBoardPiece(x + 1, y - 1)
+                if (botRight and (botRight % 2 == 1)): 
+                    moves.append((x + 1, y - 1))
    
         return moves
 
