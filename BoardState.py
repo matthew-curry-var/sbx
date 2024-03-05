@@ -32,14 +32,14 @@ class BoardState:
         
         #Print board rows
         for y in reversed(range(len(self.matrix))):
-            print(str(y) + " ", end="")
+            print(" "*3 + str(y) + " ", end="")
             print(" |", end="")
             for x in range(len(self.matrix)):
                 print(f'{str(CHESS_HEX_TO_ASCII[self.matrix[x][y]]):3}', end="")
             print("|", end="\n")
 
         #Print board alpha columns
-        print("    ", end="")
+        print(" "*7, end="")
         for y in range(len(self.matrix)):
             print(f'{str(y):3}', end="")
         print(end="\n")

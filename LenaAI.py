@@ -30,9 +30,7 @@ class LenaAI:
             #print("  " * abs(depth-2) + "pMoves: ", pMoves)
             #if (depth == 2):
                 #print("moves: ", moves)
-
-
-
+            
             if (maxSel):
                 node = (float('-inf'), pMoves)
                 for move in moves:
@@ -90,11 +88,11 @@ class LenaAI:
                     if (b % 2 == self.color):                           #If b belongs to LenaAI color
                         score += CHESS_PIECE_SCORE[b]
                         if (b > 0x2):                                   #If b is not a pawn
-                            score += len(state.getPieceLegalMoves(i, j))
+                            score += 0.5 * len(state.getPieceLegalMoves(i, j))
                     else:
                         score -= CHESS_PIECE_SCORE[b]                   #b does not belong to LenaAI color
                         if (b > 0x2):                                   #If b is not a pawn
-                            score -= len(state.getPieceLegalMoves(i, j))
+                            score -= 0.5 * len(state.getPieceLegalMoves(i, j))
         return score
     
 #Building a good chess evaluation function
