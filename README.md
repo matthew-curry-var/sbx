@@ -1,8 +1,8 @@
 # Welcome to the SBX Chess Engine remote repository! 
 
-#### SBX is a terminal-based chess engine where a user can play against a chess AI (LenaAI).
+#### What: SBX is a terminal-based chess engine where a user can play against a chess AI (LenaAI).
 
-#### Clone this repo, cd into respective directory and enter command **python3 main.py** to play a standard game of chess.
+#### How: Clone this repo, cd into respective directory and enter command **python3 main.py** to play a standard game of chess (give it a try!).
 
 #### User input is accepted as a tuple of coordinates on the board (x0, y0, x1, y1) represents a move of piece @(x0, y0) -> (x1, y1)
 
