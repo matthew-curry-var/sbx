@@ -18,9 +18,21 @@ class LenaAI:
     """minMaxTS: descend the tree of possible gamestates pursuant to minimax algorithm"""
     def minMaxTS(self, board : Chess, depth : int, a : int, b : int, maxSel : bool, color : int, pMoves : list) -> tuple:
         if (not depth or board.checkMate[0] or board.checkMate[1]):
-            return (self.naiveEval(board), pMoves)
+            print("  " * abs(depth-2) + "Reached terminal node!")
+            print("  " * abs(depth-2) + "pMoves: ", pMoves)
+            eval = self.mobility_material_eval(board)
+            print("  " * abs(depth-2) + "eval: ", eval)
+            return (eval, pMoves)
         else:
             moves = board.moves[color]
+
+            print("  " * abs(depth-2) + "color: ", color)
+            print("  " * abs(depth-2) + "pMoves: ", pMoves)
+            if (depth == 2):
+                print("moves: ", moves)
+
+
+
             if (maxSel):
                 node = (float('-inf'), pMoves)
                 for move in moves:
@@ -68,24 +80,25 @@ class LenaAI:
                     b = min(b, node[0])
                 return node
 
-    #This heuristic is hilariously bad
-    """naiveEval: return naive chess score for LenaAI's color (this could be a temporary heuristic)"""
-    def naiveEval(self, state : Chess) -> int:
+    
+    def mobility_material_eval(self, state : Chess) -> int:
         score = 0
         for i in range(BOARD_LEN):
             for j in range(BOARD_LEN):
                 b = state.getBoardPiece(i, j)
-                if (b):
-                    if (b % 2 == self.color):
+                if (b):                                                 #If b is a piece on the board
+                    if (b % 2 == self.color):                           #If b belongs to LenaAI color
                         score += CHESS_PIECE_SCORE[b]
+                        if (b > 0x2):                                   #If b is not a pawn
+                            score += len(state.getPieceLegalMoves(i, j))
                     else:
-                        score -= CHESS_PIECE_SCORE[b]
-
+                        score -= CHESS_PIECE_SCORE[b]                   #b does not belong to LenaAI color
+                        if (b > 0x2):                                   #If b is not a pawn
+                            score -= len(state.getPieceLegalMoves(i, j))
         return score
     
-
 #Building a good chess evaluation function
-#Mobility
+#Mobility (except pawns)
 #King Safety
 #Pawn Structure
 #Control of Space
