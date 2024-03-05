@@ -18,18 +18,18 @@ class LenaAI:
     """minMaxTS: descend the tree of possible gamestates pursuant to minimax algorithm"""
     def minMaxTS(self, board : Chess, depth : int, a : int, b : int, maxSel : bool, color : int, pMoves : list) -> tuple:
         if (not depth or board.checkMate[0] or board.checkMate[1]):
-            print("  " * abs(depth-2) + "Reached terminal node!")
-            print("  " * abs(depth-2) + "pMoves: ", pMoves)
+            #print("  " * abs(depth-2) + "Reached terminal node!")
+            #print("  " * abs(depth-2) + "pMoves: ", pMoves)
             eval = self.mobility_material_eval(board)
-            print("  " * abs(depth-2) + "eval: ", eval)
+            #print("  " * abs(depth-2) + "eval: ", eval)
             return (eval, pMoves)
         else:
             moves = board.moves[color]
 
-            print("  " * abs(depth-2) + "color: ", color)
-            print("  " * abs(depth-2) + "pMoves: ", pMoves)
-            if (depth == 2):
-                print("moves: ", moves)
+            #print("  " * abs(depth-2) + "color: ", color)
+            #print("  " * abs(depth-2) + "pMoves: ", pMoves)
+            #if (depth == 2):
+                #print("moves: ", moves)
 
 
 
@@ -50,7 +50,7 @@ class LenaAI:
                     board.board.place(move[2], move[3], temp2)
 
                     if (node[0] > b):
-                        print("Breaking Beta")
+                        #print("Breaking Beta")
                         break
 
                     a = max(a, node[0])
@@ -74,7 +74,7 @@ class LenaAI:
                     board.board.place(move[2], move[3], temp2)
 
                     if (node[0] < a):
-                        print("Breaking Alpha")
+                        #print("Breaking Alpha")
                         break
 
                     b = min(b, node[0])
