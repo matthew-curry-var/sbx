@@ -17,7 +17,7 @@ Parser Notes:
     
 """
 
-from Chess import Chess
+from engine.Chess import Chess
 
 class Parser(Chess):
 

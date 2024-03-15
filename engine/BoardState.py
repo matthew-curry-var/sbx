@@ -1,5 +1,5 @@
 import time
-from util import BOARD_START_POS, BOARD_LEN, EMPTY_SQ, CHESS_HEX_TO_ASCII, CHESS_NUM_ALPHA_COLS
+from utility.util import BOARD_START_POS, BOARD_LEN, EMPTY_SQ, CHESS_HEX_TO_ASCII, CHESS_NUM_ALPHA_COLS
 
 class BoardState:
 

@@ -1,4 +1,4 @@
-from BoardState import *
+from engine.BoardState import *
 
 """ Test BoardState.movePiece() """
 def testOne():

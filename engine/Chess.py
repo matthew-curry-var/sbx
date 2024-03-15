@@ -1,6 +1,6 @@
-from BoardState import *
-from util import *
-from cursor import *
+from engine.BoardState import *
+from utility.util import *
+from utility.cursor import *
 
 class Chess:
 
@@ -10,6 +10,7 @@ class Chess:
         self.kingLocs = {0: (4, 7), 1: (4, 0)}
         self.checkMate = {0: False, 1: False}
         self.currentColor = 1
+        self.colorFilter = False
         self.findLegalMoves(0)
         self.findLegalMoves(1)
 
@@ -19,8 +20,10 @@ class Chess:
 
     """move: take move piece input and implement iff. legal according to piece move and check rules"""
     def move(self, xOrig : int, yOrig : int, xDest : int, yDest : int) -> None:
+        
         if (not self.checkMate[self.currentColor]):
-            if ((xOrig, yOrig, xDest, yDest) in self.moves[self.currentColor]):
+            #if (((xOrig, yOrig, xDest, yDest) in self.moves[self.currentColor]) or self.colorFilter):     #THIS IS CAUSING AI BUG DURING TS
+            #if ((xOrig, yOrig, xDest, yDest) in self.moves[self.currentColor]):
                 self.board.movePiece(xOrig, yOrig, xDest, yDest)                    #Apply move
                 piece = self.getBoardPiece(xDest, yDest)
                 if (piece == 0xB):                                                  #If piece moved is white king
@@ -33,16 +36,11 @@ class Chess:
 
     """fingLegalMoves: find legal moves for color (includes check filtereing)"""
     def findLegalMoves(self, color : int) -> None:
-        moves = self.allPiecewiseMoves(color)                                       #Get all legal piecewise moves for color
-        moves = self.checkMoves(moves, color)                                       #Check filter
-        if (not len(moves)): self.checkMate[color] = True                           #Checkmate flag
-        self.moves[color] = moves                                                   #Add moves to object member
-
-    """returnLegalMoves: helper function to return legal moves outside of the class"""
-    def returnLegalMoves(self, color : int) -> list:
-        moves = self.allPiecewiseMoves(color)
-        moves = self.checkMoves(moves, color)
-        return moves
+        pieceMoves = self.allPiecewiseMoves(color)                                      #Get all legal piecewise moves for color
+        filteredMoves = self.checkMoves(pieceMoves, color)                              #Check filter
+        if (not len(filteredMoves)): 
+            self.checkMate[color] = True                                                #Checkmate flag
+        self.moves[color] = filteredMoves                                               #Add moves to object member
 
     """legalPiecewiseMoves: returns flattened list of all moves for a given color by piece rules (no check filtering)"""
     def allPiecewiseMoves(self, color) -> list:

@@ -1,4 +1,4 @@
-from cursor import *
+from utility.cursor import *
 
 """ Useful Constants """
 BOARD_LEN, EMPTY_SQ = 8, 0x0
@@ -57,18 +57,23 @@ CHESS_HEX_TO_ASCII = {
 }
 
 CHESS_PIECE_SCORE = {
-    0x1: 1, #white pawn
+    0x1: -1, #white pawn
     0x2: 1, #black pawn
-    0x3: 5, #white rook
+    0x3: -5, #white rook
     0x4: 5, #black rook
-    0x5: 3, #white knight
+    0x5: -3, #white knight
     0x6: 3, #black knight
-    0x7: 3, #white bishop
+    0x7: -3, #white bishop
     0x8: 3, #black bishop
-    0x9: 9, #white queen
+    0x9: -9, #white queen
     0xA: 9, #black queen
-    0xB: 200, #white king
-    0xC: 200, #black king
+    0xB: 0, #white king
+    0xC: 0, #black king
+}
+
+PAWNS = {
+    0 : 0x2, #Black pawn
+    1 : 0x1  #White pawn
 }
 
 KINGS = {
@@ -102,6 +107,7 @@ CHESS_ALPHA_NUM_COLS = {
     "g": 6,
     "h": 7
 }
+
 
 """LIFO (Last In First Out) Stack Class"""
 class Stack:
@@ -201,3 +207,22 @@ def listToDict(listVar : list, defVal : int) -> dict:
 """str_to_int: convert a string into list of strings"""
 def str_to_lst(strVar : list) -> list:
     return [strVar[i] for i in range(len(strVar))]
+
+"""adjacent_squares: returns a list of coordinates of adjacent squares exactly (avoid edge runoff)"""
+def adjacent_squares(x: int, y: int) -> list:
+    # List to store adjacent squares
+    adjacent = []
+
+    # Define the possible movements to adjacent squares (up, down, left, right, diagonal)
+    movements = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]
+
+    # Check each possible movement
+    for dx, dy in movements:
+        # Calculate new coordinates
+        new_x, new_y = x + dx, y + dy
+        # Check if the new coordinates are within the bounds of the 8x8 array
+        if 0 <= new_x < 7 and 0 <= new_y < 7:
+            adjacent.append((new_x, new_y))
+
+
+    return adjacent
