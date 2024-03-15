@@ -10,5 +10,5 @@
 
 #### Some next aspects for this project: (1) Improve evaluation functions, (2) GUI representation, (3) Fully integrated test suite
 
-![AI Puts me in checkmate] 
+![AI Puts me in checkmate](https://github.com/matthew-curry-var/sbx/blob/master/img/img/AI_checkmate_example.png)
 
