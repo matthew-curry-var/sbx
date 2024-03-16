@@ -43,7 +43,7 @@ class LenaAI:
 
                     board.board.place(move[0], move[1], temp1) #Epilogue
                     board.board.place(move[2], move[3], temp2)
-                    #board.currentColor = color
+                    board.currentColor = color
 
                     if (node[0] > b):
                         break
@@ -68,7 +68,7 @@ class LenaAI:
 
                     board.board.place(move[0], move[1], temp1) #Epilogue
                     board.board.place(move[2], move[3], temp2)
-                    #board.currentColor = color
+                    board.currentColor = color
 
                     
                     if (node[0] < a):

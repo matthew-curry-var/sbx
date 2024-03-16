@@ -23,7 +23,8 @@ class Chess:
         
         if (not self.checkMate[self.currentColor]):
             #if (((xOrig, yOrig, xDest, yDest) in self.moves[self.currentColor]) or self.colorFilter):     #THIS IS CAUSING AI BUG DURING TS
-            #if ((xOrig, yOrig, xDest, yDest) in self.moves[self.currentColor]):
+            if ((xOrig, yOrig, xDest, yDest) in self.moves[self.currentColor]):
+                #print((xOrig, yOrig, xDest, yDest))
                 self.board.movePiece(xOrig, yOrig, xDest, yDest)                    #Apply move
                 piece = self.getBoardPiece(xDest, yDest)
                 if (piece == 0xB):                                                  #If piece moved is white king
