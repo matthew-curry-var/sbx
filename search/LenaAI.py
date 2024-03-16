@@ -100,7 +100,7 @@ class LenaAI:
         #print("Mobility Score = ", mobility_score)
         pawn_struct_score = self.pawn_struct_eval(state)
         #print("Pawn Structure Score = ", pawn_struct_score)
-        return material_score + (0.2 * mobility_score) + (0.5 * pawn_struct_score)
+        return (5 * material_score) + (0.2 * mobility_score) + (0.5 * pawn_struct_score)
 
 
     #eventually combine into a single function for 1 iteration

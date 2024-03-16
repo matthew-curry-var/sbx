@@ -85,10 +85,9 @@ def main():
                         piece_image_src.pop(clicked_square)
                         opponent = True
                     chessGame.applyMove(move)
+                    #print(chessGame.moves[1])
                     chessGame.printGameState()
                     dragged_piece = None
-
-
 
 
         #Calculate and apply opponent move
@@ -102,6 +101,8 @@ def main():
                 opponent = False
             except:
                 print("AI failed to produce move")
+                break
+        
 
         #Draw elements to the board
         screen.fill((R_COLOR, G_COLOR, B_COLOR))
