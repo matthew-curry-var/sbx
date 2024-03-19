@@ -11,11 +11,9 @@ class LenaAI:
     """getNextMove: parent caller function for tree search"""
     def getNextMove(self, root : Chess) -> tuple:
         a_i, b_i = float('-inf'), float('inf')
-        #root.colorFilter = True
+        root.colorFilter = True
         n = self.minMaxTS(board=root, depth=2, a=a_i, b=b_i, maxSel=True, color=self.color, pMoves=[])
-        #root.colorFilter = False
-        #print("Return Node: ", n)
-        #print("Curr color: ", root.currentColor)
+        root.colorFilter = False
         return n[1][0]
         
  
@@ -23,7 +21,7 @@ class LenaAI:
     def minMaxTS(self, board : Chess, depth : int, a : int, b : int, maxSel : bool, color : int, pMoves : list) -> tuple:
         if (not depth or board.checkMate[0] or board.checkMate[1]):
             eval = self.eval(board)
-            #print((eval, pMoves))   #There is a bug with the current color of chess and applying the AI's move. How can I make it work?
+            #print((eval, pMoves))
             return (eval, pMoves)
         else:
 
@@ -60,21 +58,16 @@ class LenaAI:
                     temp2 = board.getBoardPiece(move[2], move[3])
                     board.applyMove(move)
                     descend = self.minMaxTS(board, depth-1, a, b, True, (color+1)%2, pMoves + [move])
-        
                     
                     if (node[0] > descend[0]):
                         node = descend
                     
-
                     board.board.place(move[0], move[1], temp1) #Epilogue
                     board.board.place(move[2], move[3], temp2)
                     board.currentColor = color
 
                     
                     if (node[0] < a):
-                        #print("   " * abs(depth-2), "Breaking Alpha")
-                        #print("   " * abs(depth-2), "node[0] yielded: ", node[0])
-                        #print("   " * abs(depth-2), "Alpha value: ", a)
                         break
 
                     b = min(b, node[0])
@@ -100,7 +93,7 @@ class LenaAI:
         #print("Mobility Score = ", mobility_score)
         pawn_struct_score = self.pawn_struct_eval(state)
         #print("Pawn Structure Score = ", pawn_struct_score)
-        return (5 * material_score) + (0.2 * mobility_score) + (0.5 * pawn_struct_score)
+        return (5 * material_score) + (0.5 * mobility_score) + (0.5 * pawn_struct_score)
 
 
     #eventually combine into a single function for 1 iteration

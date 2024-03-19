@@ -1,4 +1,5 @@
 from utility.cursor import *
+import pygame
 
 """ Useful Constants """
 BOARD_LEN, EMPTY_SQ = 8, 0x0
@@ -107,6 +108,40 @@ CHESS_ALPHA_NUM_COLS = {
     "g": 6,
     "h": 7
 }
+
+PIECE_POS_SOURCE = {
+    (0, 7) : "img/Chess_rdt60.png", (1, 7) : "img/Chess_ndt60.png", (2, 7) : "img/Chess_bdt60.png", (3, 7) : "img/Chess_qdt60.png",
+    (4, 7) : "img/Chess_kdt60.png", (5, 7) : "img/Chess_bdt60.png", (6, 7) : "img/Chess_ndt60.png", (7, 7) : "img/Chess_rdt60.png",
+    (0, 6) : "img/Chess_pdt60.png", (1, 6) : "img/Chess_pdt60.png", (2, 6) : "img/Chess_pdt60.png", (3, 6) : "img/Chess_pdt60.png",
+    (4, 6) : "img/Chess_pdt60.png", (5, 6) : "img/Chess_pdt60.png", (6, 6) : "img/Chess_pdt60.png", (7, 6) : "img/Chess_pdt60.png",
+    (0, 1) : "img/Chess_plt60.png", (1, 1) : "img/Chess_plt60.png", (2, 1) : "img/Chess_plt60.png", (3, 1) : "img/Chess_plt60.png",
+    (4, 1) : "img/Chess_plt60.png", (5, 1) : "img/Chess_plt60.png", (6, 1) : "img/Chess_plt60.png", (7, 1) : "img/Chess_plt60.png",
+    (0, 0) : "img/Chess_rlt60.png", (1, 0) : "img/Chess_nlt60.png", (2, 0) : "img/Chess_blt60.png", (3, 0) : "img/Chess_qlt60.png",
+    (4, 0) : "img/Chess_klt60.png", (5, 0) : "img/Chess_blt60.png", (6, 0) : "img/Chess_nlt60.png", (7, 0) : "img/Chess_rlt60.png"
+    }
+
+PIECE_PYIMAGES = {
+    "img/Chess_rdt60.png" : pygame.image.load("img/Chess_rdt60.png"), "img/Chess_ndt60.png" : pygame.image.load("img/Chess_ndt60.png"),
+    "img/Chess_bdt60.png" : pygame.image.load("img/Chess_bdt60.png"), "img/Chess_qdt60.png" : pygame.image.load("img/Chess_qdt60.png"),
+    "img/Chess_kdt60.png" : pygame.image.load("img/Chess_kdt60.png"), "img/Chess_bdt60.png" : pygame.image.load("img/Chess_bdt60.png"),
+    "img/Chess_ndt60.png" : pygame.image.load("img/Chess_ndt60.png"), "img/Chess_rdt60.png" : pygame.image.load("img/Chess_rdt60.png"),
+    "img/Chess_pdt60.png" : pygame.image.load("img/Chess_pdt60.png"), "img/Chess_pdt60.png" : pygame.image.load("img/Chess_pdt60.png"),
+    "img/Chess_pdt60.png" : pygame.image.load("img/Chess_pdt60.png"), "img/Chess_pdt60.png" : pygame.image.load("img/Chess_pdt60.png"),
+    "img/Chess_pdt60.png" : pygame.image.load("img/Chess_pdt60.png"), "img/Chess_pdt60.png" : pygame.image.load("img/Chess_pdt60.png"),
+    "img/Chess_pdt60.png" : pygame.image.load("img/Chess_pdt60.png"), "img/Chess_pdt60.png" : pygame.image.load("img/Chess_pdt60.png"),
+    "img/Chess_plt60.png" : pygame.image.load("img/Chess_plt60.png"), "img/Chess_plt60.png" : pygame.image.load("img/Chess_plt60.png"),
+    "img/Chess_plt60.png" : pygame.image.load("img/Chess_plt60.png"), "img/Chess_plt60.png" : pygame.image.load("img/Chess_plt60.png"),
+    "img/Chess_plt60.png" : pygame.image.load("img/Chess_plt60.png"), "img/Chess_plt60.png" : pygame.image.load("img/Chess_plt60.png"),
+    "img/Chess_plt60.png" : pygame.image.load("img/Chess_plt60.png"), "img/Chess_plt60.png" : pygame.image.load("img/Chess_plt60.png"),
+    "img/Chess_rlt60.png" : pygame.image.load("img/Chess_rlt60.png"), "img/Chess_nlt60.png" : pygame.image.load("img/Chess_nlt60.png"),
+    "img/Chess_blt60.png" : pygame.image.load("img/Chess_blt60.png"), "img/Chess_qlt60.png" : pygame.image.load("img/Chess_qlt60.png"),
+    "img/Chess_klt60.png" : pygame.image.load("img/Chess_klt60.png"), "img/Chess_blt60.png" : pygame.image.load("img/Chess_blt60.png"),
+    "img/Chess_nlt60.png" : pygame.image.load("img/Chess_nlt60.png"), "img/Chess_rlt60.png" : pygame.image.load("img/Chess_rlt60.png")
+    }
+
+CHESSBOARD_IMAGE = pygame.image.load("img/img/blank-chess-board.gif")
+SELECT_SQUARE = pygame.image.load("img/img/highlightSquare.png")
+TARGET_SQUARE = pygame.image.load("img/img/targetSquare.jpeg")
 
 
 """LIFO (Last In First Out) Stack Class"""

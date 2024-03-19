@@ -9,8 +9,8 @@ class Chess:
         self.moves = {0: None, 1: None}
         self.kingLocs = {0: (4, 7), 1: (4, 0)}
         self.checkMate = {0: False, 1: False}
-        self.currentColor = 1
         self.colorFilter = False
+        self.currentColor = 1
         self.findLegalMoves(0)
         self.findLegalMoves(1)
 
@@ -22,9 +22,7 @@ class Chess:
     def move(self, xOrig : int, yOrig : int, xDest : int, yDest : int) -> None:
         
         if (not self.checkMate[self.currentColor]):
-            #if (((xOrig, yOrig, xDest, yDest) in self.moves[self.currentColor]) or self.colorFilter):     #THIS IS CAUSING AI BUG DURING TS
-            if ((xOrig, yOrig, xDest, yDest) in self.moves[self.currentColor]):
-                #print((xOrig, yOrig, xDest, yDest))
+            if ((xOrig, yOrig, xDest, yDest) in self.moves[self.currentColor] or self.colorFilter):
                 self.board.movePiece(xOrig, yOrig, xDest, yDest)                    #Apply move
                 piece = self.getBoardPiece(xDest, yDest)
                 if (piece == 0xB):                                                  #If piece moved is white king
@@ -123,7 +121,9 @@ class Chess:
                 moveDests = self.queenMove(pieceX, pieceY, color)    #Queen
             elif (piece == 0x0B or piece == 0x0C):  
                 moveDests = self.kingMove(pieceX, pieceY, color)     #King
-        return self.prependLoc(pieceX, pieceY, moveDests)
+            return self.prependLoc(pieceX, pieceY, moveDests)
+        else:
+            return []
     
     """prependLoc: prepend origin coordinate to each tuple in destination locations list"""
     def prependLoc(self, x0 : int, y0 : int, destLocs : list) -> list:
