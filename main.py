@@ -46,7 +46,8 @@ def main():
 
 
                 if (0 <= square_x <= 7 and 0 <= square_y <= 7):
-                    p, p_moves = chessGame.getBoardPiece(square_x, square_y), chessGame.getPieceLegalMoves(square_x, square_y)
+                    p = chessGame.getBoardPiece(square_x, square_y)
+                    p_moves = chessGame.checkMoves(chessGame.getPieceLegalMoves(square_x, square_y), 1)
 
                     #If there is a piece selected apply move if legal move (else reset select)
                     if (select):
